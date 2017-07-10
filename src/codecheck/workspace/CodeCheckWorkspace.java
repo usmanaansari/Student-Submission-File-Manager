@@ -7,6 +7,8 @@ package codecheck.workspace;
 
 import codecheck.CodeCheckApp;
 import static codecheck.CodeCheckProps.ABOUT_BUTTON;
+import static codecheck.CodeCheckProps.CLOSE_CONFIRMATION;
+import static codecheck.CodeCheckProps.CLOSE_MESSAGE;
 import static codecheck.CodeCheckProps.HOME_BUTTON;
 import static codecheck.CodeCheckProps.NEXT_BUTTON;
 import static codecheck.CodeCheckProps.PREV_BUTTON;
@@ -23,11 +25,14 @@ import static djf.ui.AppGUI.CLASS_BORDERED_PANE;
 import static djf.ui.AppGUI.CLASS_FILE_BUTTON;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.SplitPane;
 import javafx.scene.layout.BorderPane;
@@ -196,6 +201,20 @@ public class CodeCheckWorkspace extends AppWorkspaceComponent {
     }
     
     private void initControllers(){
+        app.getGUI().getPrimaryStage().setOnCloseRequest(e ->{
+           PropertiesManager props = PropertiesManager.getPropertiesManager();
+        
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle(props.getProperty(CLOSE_CONFIRMATION));
+            alert.setContentText(props.getProperty(CLOSE_MESSAGE));
+
+            Optional<ButtonType> result = alert.showAndWait();
+            if (result.get() == ButtonType.OK){
+                app.getGUI().getPrimaryStage().close();
+            } else {
+                e.consume();
+            }
+        });
         newButton.setOnAction(e -> {
             try {
                 controller.handleNew();
@@ -285,6 +304,9 @@ public class CodeCheckWorkspace extends AppWorkspaceComponent {
         });
         aboutButton.setOnAction(e -> {
             controller.handleAbout();
+        });
+        loadButton.setOnAction(e -> {
+            controller.handleLoad();
         });
     }
     
