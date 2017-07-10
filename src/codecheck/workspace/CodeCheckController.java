@@ -6,6 +6,8 @@
 package codecheck.workspace;
 
 import codecheck.CodeCheckApp;
+import static codecheck.CodeCheckProps.ABOUT_MESSAGE;
+import static codecheck.CodeCheckProps.ABOUT_TITLE;
 import static codecheck.CodeCheckProps.APP_PATH_WORK;
 import static codecheck.CodeCheckProps.DUP_CODECHECK_MESSAGE;
 import static codecheck.CodeCheckProps.DUP_CODECHECK_TITLE;
@@ -86,7 +88,7 @@ public class CodeCheckController {
                     directories.add(new File(CC.getPath() + "\\submissions"));
                     directories.add(new File(CC.getPath() + "\\projects"));
                     directories.add(new File(CC.getPath() + "\\code"));
-                    data.addCodeCheck(codeC);
+                    data.addCodeCheck(title,path);
                     
                     for(File f : directories) {
                         if(f.mkdir()) {
@@ -96,9 +98,10 @@ public class CodeCheckController {
                           System.out.println(f.getPath() + " not made");
                         }
                     }
-                    // fix this app.getGUI().getPrimaryStage().setTitle("Code Check - "+ title);
+                    app.getGUI().getPrimaryStage().setTitle("Code Check - "+ title);
                     
-                    //data.setTitle(title);
+                    data.setTitle(title);
+                    //System.out.println(title);
                 
                     // WE MAY HAVE TO SAVE CURRENT WORK
                     boolean continueToMakeNew = true;
@@ -156,24 +159,48 @@ public class CodeCheckController {
         
     }
     
-//    public void handleRename() throws IOException{
-//        CodeCheckWorkspace work = (CodeCheckWorkspace) app.getWorkspaceComponent();
-//        CodeCheckData data = (CodeCheckData) app.getDataComponent();
-//        PropertiesManager props = PropertiesManager.getPropertiesManager();
-//        TextInputDialog dialog = new TextInputDialog();
-//        dialog.setTitle(props.getProperty(RENAME_TITLE));
-//        dialog.setContentText(props.getProperty(RENAME_MESSAGE));
-//        ObservableList<CodeCheck> codeChecks = data.getCodeChecks();
-//        // Traditional way to get the response value.
-//        Optional<String> result = dialog.showAndWait();
-//        if (result.isPresent()){
-//        File folder = new File(data.getWorkPath());
-//        File file = new File("yo");
-//        //if(directoryContains(folder, file )){
-//            
-//        }
-//        
+    public void handleRename() throws IOException{
+        CodeCheckWorkspace work = (CodeCheckWorkspace) app.getWorkspaceComponent();
+        CodeCheckData data = (CodeCheckData) app.getDataComponent();
+        PropertiesManager props = PropertiesManager.getPropertiesManager();
+        TextInputDialog dialog = new TextInputDialog();
+        dialog.setTitle(props.getProperty(RENAME_TITLE));
+        dialog.setContentText(props.getProperty(RENAME_MESSAGE));
+        ObservableList<CodeCheck> codeChecks = data.getCodeChecks();
+        // Traditional way to get the response value.
+        Optional<String> result = dialog.showAndWait();
+        String path = data.getWorkPath();
+        if (result.isPresent()){
+            String p = path + result.get();
+            File file = new File(p);
+            if(file.exists()){
+                Alert alert = new Alert(AlertType.ERROR);
+                alert.setContentText("A Code Check with that name already exists");
+                alert.showAndWait();
+            }
+            //}
+            else{
+                
+                 app.getGUI().getPrimaryStage().setTitle("Code Check - " + result.get());
+                 File f = new File(path + data.getTitle());
+                 data.setTitle(result.get());
+                 f.renameTo(file);
+                 
+                
+            }
+            
+        }
+    }
         
+        
+    public void handleAbout(){
+        PropertiesManager props = PropertiesManager.getPropertiesManager();
+        Alert alert = new Alert(AlertType.INFORMATION);
+        alert.setTitle(props.getProperty(ABOUT_TITLE));
+        alert.setContentText(props.getProperty(ABOUT_MESSAGE));
+
+        alert.showAndWait();        
+    }
         
 }
     

@@ -20,10 +20,11 @@ public class CodeCheckData implements AppDataComponent {
     String workPath;
     ObservableList<CodeCheck> codechecks;
     
+    
     public CodeCheckData(CodeCheckApp initApp) {
     CodeCheckTitle = "";
     codechecks = FXCollections.observableArrayList();
-    workPath = "C:\\Users\\Usman\\Desktop\\219\\Final\\codecheckproject\\CodeCheck\\work\\"; 
+    workPath = "C:\\Users\\Usman\\Desktop\\219\\CodeCheckProj\\CodeCheck\\work\\"; 
     }
    
     @Override
@@ -37,10 +38,11 @@ public class CodeCheckData implements AppDataComponent {
     public String getTitle(){
         return CodeCheckTitle;
     }
-    public void addCodeCheck(CodeCheck cc){
-        String p = cc.getPath();
-        codechecks.add(cc);
+    public void addCodeCheck(String title, String path){
+        CodeCheck code = new CodeCheck(title, path);
+        codechecks.add(code);
     }
+   
     public ObservableList getCodeChecks(){
         return codechecks;
     }

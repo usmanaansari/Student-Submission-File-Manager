@@ -276,8 +276,15 @@ public class CodeCheckWorkspace extends AppWorkspaceComponent {
             }
         });
         renameButton.setOnAction( e -> {
-            //controller.handleRename();
+            try {
+                controller.handleRename();
+            } catch (IOException ex) {
+                Logger.getLogger(CodeCheckWorkspace.class.getName()).log(Level.SEVERE, null, ex);
+            }
 
+        });
+        aboutButton.setOnAction(e -> {
+            controller.handleAbout();
         });
     }
     
