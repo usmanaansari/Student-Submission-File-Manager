@@ -1,0 +1,86 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : Jul 5, 2017, 9:20:56 PM
+    Author     : Usman
+*/
+
+.dialog_pane {
+    -fx-padding:15;
+}
+
+.dialog_heading {
+    -fx-font-size: 24pt;
+    -fx-color:red;
+}
+
+.dialog_prompt {
+    -fx-font-size: 16pt;
+    -fx-font-weight: bold;
+    -fx-padding: 10;
+}
+.bordered_pane {
+    -fx-background-color: #fbedfe;
+    -fx-background-radius: 5.0;
+    -fx-padding: 15;
+    -fx-spacing: 10;
+    -fx-border-width: 1px;
+    -fx-border-color: #b7b0b9;
+}
+.top_pane{
+    -fx-background-color: #f2c9fb;
+    -fx-background-radius: 5.0;
+    -fx-padding: 15;
+    -fx-spacing: 10;
+    -fx-border-width: 1px;
+    -fx-border-color: #b7b0b9;
+}
+
+.file_button{
+    -fx-font-size: 20pt;
+    -fx-padding: 5 50 5 50;
+    -fx-border-radius: 10 10 10 10;
+    -fx-background-radius: 10 10 10 10;
+}
+
+.prompt_label{
+    -fx-font-size:20pt;
+    -fx-font-weight:bold;
+    -fx-padding: 15;
+    -fx-spacing: 10;
+}
+.ftype_label{
+    -fx-font-size:14pt;
+    
+    -fx-spacing: 10;
+}
+.checkbox{
+    -fx-padding: 10 5 10 5;
+}
+.box{
+    -fx-background-color: #ffffff;
+}
+.welc_left{
+    -fx-background-color: #fbedfe;
+}
+
+.button_box{
+    -fx-padding: 10 10 10 10;
+    -fx-spacing: 10;
+}
+.new_cc{
+    -fx-font-size:20pt;
+}
+.buttonbox_buttons{
+    -fx-font-size: 20pt;
+    -fx-padding: 5 10 5 10;
+    -fx-border-radius: 10 10 10 10;
+    -fx-background-radius: 10 10 10 10;
+}
+.file_types{
+    -fx-background-color: #b7b0b9
+}
+

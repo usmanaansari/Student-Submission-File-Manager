@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    This XML file allows us to easily customize the look and language used
+    in our program's user interface. Note that this properties file is only
+    for the standard controls for an app from the Desktop Java Framework, so
+    it would not include things initialized for the workspace, which is
+    customizable.
+-->
+<properties>
+    <property_list>
+        <property name="APP_TITLE"	    value="Code Check"></property>
+	<property name="APP_LOGO"	    value="SlideshowCreatorLogo.png"></property>
+	<property name="APP_PATH_CSS"	    value="style/"></property>
+	<property name="APP_CSS"	    value="cc_style.css"></property>
+        <property name="APP_PATH_WORK"      value="work/"></property>
+        
+        <!-- PROGRAM ICON FILES -->
+        <property name="NEW_ICON"	    value="New"></property>
+        <property name="LOAD_ICON"	    value="Load"></property>
+        <property name="SAVE_ICON"	    value="Save.png"></property>
+        <property name="SAVE_AS_ICON"       value="SaveAs.png"></property>
+        <property name="EXIT_ICON"          value="Exit.png"></property> 
+        <property name="UP_ICON"            value="Up.png"></property>
+        <property name="DOWN_ICON"          value="Down.png"></property>
+        <property name="NEXT_BUTTON"        value="Next"></property>
+        <property name="PREV_BUTTON"        value="Previous"></property>
+        <property name="HOME_BUTTON"        value="Home"></property>
+        <property name="ABOUT_BUTTON"        value="About"></property>
+        <property name="RENAME_BUTTON"       value="Rename"></property>
+        <property name="REFRESH_BUTTON"     value="Refresh"></property>
+        <property name="REMOVE_BUTTON"      value="Remove"></property>
+        <property name="UNZIP_BUTTON"       value="Unzip"></property>
+        <property name="EXTRACTCODE_BUTTON" value="Extract Code"></property>
+        <property name="CODECHECK_BUTTON"   value="Code Check"></property>
+        <property name="VIEWRESULTS_BUTTON" value="View Results"></property>
+        <property name="VIEW_BUTTON"        value="View"></property>
+        <property name="EXTRACT_BUTTON"     value="Extract"></property>
+        <property name="STEP1_LABEL"        value="Step 1: Extract Submissions"></property>
+        <property name="STEP1_DESC_LABEL"   value="Select the submissions from which to extract student work"></property>
+        <property name="PROG1_LABEL"        value="Extraction Progress:"></property>
+        <property name="STEP2_LABEL"        value="Step 2: Rename Submissions"></property>
+        <property name="STEP2_DESC_LABEL"   value="Click the Rename button to rename all submissions"></property>
+        <property name="PROG2_LABEL"        value="Rename Progress:"></property>
+        <property name="STEP3_LABEL"        value="Step 3: Unzip Submissions"></property>
+        <property name="STEP3_DESC_LABEL"   value="Select student submissions and click Unzip"></property>
+        <property name="PROG3_LABEL"        value="Unzip Progress:"></property>
+        <property name="STEP4_LABEL"        value="Step 4: Extract Source Code"></property>
+        <property name="STEP4_DESC_LABEL"   value="Select students and click Extract Code"></property>
+        <property name="PROG4_LABEL"        value="Code Progress:"></property>
+        <property name="JCHECK_LABEL"       value=".java"></property>
+        <property name="CCHECK_LABEL"       value=".c, .h, .cpp"></property>
+        <property name="JSCHECK_LABEL"      value=".js"></property>
+        <property name="CSCHECK_LABEL"      value=".cs"></property>
+        <property name="SFT_LABEL"          value="Source File Types"></property>
+        <property name="STEP5_LABEL"        value="Step 5: Code Check"></property>
+        <property name="STEP5_DESC_LABEL"   value="Select students and click Code Check"></property>
+        <property name="PROG5_LABEL"        value="Check Progress:"></property>
+        <property name="RECENT_WORK_LABEL"  value="Recent Work:"></property>
+        <property name="WELC_LABEL"         value="Welcome to Code Check"></property>
+        <property name="CREATE_NEW_LABEL"   value="Create new Code Check"></property>
+        <property name="XBUTTON"            value="X"></property>
+        <!-- TOOLTIPS FOR BUTTONS -->
+        <property name="NEW_TOOLTIP"		value="Create a New Slideshow"></property>
+        <property name="LOAD_TOOLTIP"		value="Load an existing Slideshow"></property>
+        <property name="ABOUT_TOOLTIP"		value="View Application Info"></property>
+        <property name="RENAME_TOOLTIP"		value="REname the Application"></property>
+        
+        <property name="NEW_CONFIRMATION"          value="Create New CodeCheck"></property>
+        <property name="NEW_CONF_CONTENT"        value="Are you sure you want to create a new Code Check?"></property>
+        <property name="NEW_TITLE"              value="New Code Check Creation"></property>
+        <property name="NEW_CONTENT"        value="Please enter a name for the new Code Check"></property>
+        <!-- ERROR MESSAGES -->
+        <property name="CLOSE_BUTTON_TEXT"              value="Close"></property>
+
+        <property name="NEW_ERROR_MESSAGE"              value="An error occured creating New work."></property>
+        <property name="NEW_ERROR_TITLE"		value="New Work Error"></property>
+        <property name="LOAD_ERROR_MESSAGE"             value="An error occured loading work."></property>
+        <property name="LOAD_ERROR_TITLE"		value="Load Work Error"></property>
+        <property name="SAVE_ERROR_MESSAGE"             value="An error occured saving work."></property>
+        <property name="SAVE_ERROR_TITLE"		value="Save Work Error"></property>
+        <property name="PROPERTIES_LOAD_ERROR_MESSAGE"	value="An error occured loading a properties file."></property>	
+        <property name="PROPERTIES_LOAD_ERROR_TITLE"	value="Properties File Loading Error"></property>
+	
+        <!-- VERIFICATION MESSAGES -->
+	
+        <property name="NEW_COMPLETED_MESSAGE"		value="New Work Ready for Editing"></property>
+        <property name="NEW_COMPLETED_TITLE"		value="New Work Created"></property>
+        <property name="LOAD_COMPLETED_MESSAGE"		value="File Loading Completed and ready for editing"></property>
+        <property name="LOAD_COMPLETED_TITLE"		value="Loading Completed"></property>
+        <property name="SAVE_COMPLETED_MESSAGE"		value="File Saving Completed"></property>
+        <property name="SAVE_COMPLETED_TITLE"		value="Saving Completed"></property>
+        <property name="SAVE_UNSAVED_WORK_MESSAGE"	value="Would you like to save your unsaved work first?"></property>
+        <property name="SAVE_UNSAVED_WORK_TITLE"	value="Save unsaved work?"></property>
+	
+        <property name="NEW_CREATED_MESSAGE"		value="New Work Created but not yet Saved"></property>
+        <property name="WORK_LOADED_MESSAGE"		value="The Work has been Loaded"></property>
+        <property name="WORK_SAVED_MESSAGE"		value="The Work has been Saved"></property>
+        <property name="SAVE_UNSAVED_WORK_MESSAGE"	value="Do you want to save your unsaved work first?"></property>
+	<property name="SAVE_WORK_TITLE"		value="Save your work"></property>
+	<property name="LOAD_WORK_TITLE"		value="Select file to load"></property>
+	<property name="WORK_FILE_EXT"			value="json"></property>
+	<property name="WORK_FILE_EXT_DESC"		value="CodeCheck"></property>
+
+        <property name="DUP_CODECHECK_TITLE"            value="Invalid Code Check Name"></property>
+        <property name="DUP_CODECHECK_MESSAGE"          value="The title provided is already used"></property>
+        <property name="RENAME_TITLE"                   value="Rename Code Check Title"></property>
+        <property name="RENAME_MESSAGE"                 value="Please enter a new name for the Code Check"></property>
+        <!-- WORKSPACE ERROR MESSAGES -->
+        <property name="INVALID_IMAGE_PATH_TITLE"       value="Invalid Image Path"></property>
+        <property name="INVALID_IMAGE_PATH_MESSAGE"     value="Image not found"></property>
+        <property name="FILENAME_NULL_MESSAGE"          value="There is no Image selected for removal"></property>
+        <property name="FILENAME_NULL_TITLE"            value="Cannot Remove"></property>
+    </property_list>
+    <property_options_list>
+    </property_options_list>
+</properties>
