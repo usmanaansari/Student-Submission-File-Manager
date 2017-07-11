@@ -87,6 +87,7 @@ public class CodeCheckController {
                 CodeCheck codeC = new CodeCheck(title, path);
                 File CC = new File(codeC.getPath());
                 
+                
                 if(CC.mkdir()){
                     System.out.println("Code Check successfully created");
                     directories.add(new File(CC.getPath() + "\\blackboard"));
@@ -107,7 +108,7 @@ public class CodeCheckController {
                     
                     data.setTitle(title);
                     //System.out.println(title);
-                
+                    
                     // WE MAY HAVE TO SAVE CURRENT WORK
                     boolean continueToMakeNew = true;
                     // IF THE USER REALLY WANTS TO MAKE A NEW COURSE
@@ -124,7 +125,7 @@ public class CodeCheckController {
                     // MAKE SURE THE WORKSPACE IS ACTIVATED
                     app.getWorkspaceComponent().activateWorkspace(app.getGUI().getAppPane());
                     
-                    //app.getFileComponent().saveData(data, path);
+                    app.getFileComponent().saveData(data, path+"File");
                     //app.getWorkspaceComponent().getWorkspace().
                     // REFRESH THE GUI, WHICH WILL ENABLE AND DISABLE
                     // THE APPROPRIATE CONTROLS
@@ -202,6 +203,7 @@ public class CodeCheckController {
             else{
                 
                  app.getGUI().getPrimaryStage().setTitle("Code Check - " + result.get());
+                 //app.getFileComponent().saveData(data, path+"yo");
                  File f = new File(path + data.getTitle());
                  data.setTitle(result.get());
                  f.renameTo(file);

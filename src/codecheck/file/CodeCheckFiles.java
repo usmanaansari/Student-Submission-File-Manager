@@ -26,7 +26,9 @@ import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
 import javax.json.JsonReader;
+import javax.json.JsonString;
 import javax.json.JsonWriter;
 import javax.json.JsonWriterFactory;
 import javax.json.stream.JsonGenerator;
@@ -48,18 +50,21 @@ public class CodeCheckFiles implements AppFileComponent {
     @Override
     public void saveData(AppDataComponent data, String filePath) throws IOException {
        CodeCheckData dataManager = (CodeCheckData) app.getDataComponent();
+       
        JsonArrayBuilder ccArrayBuilder = Json.createArrayBuilder();
+       JsonObjectBuilder ccTitleBuilder = Json.createObjectBuilder();
        ObservableList<CodeCheck> codechecks = dataManager.getCodeChecks();
        
-       for(CodeCheck codecheck : codechecks){
+       //for(CodeCheck codecheck : codechecks){
            JsonObject codecheckJson = (JsonObject) Json.createObjectBuilder()
                    .add(JSON_CODECHECK_TITLE, dataManager.getTitle()).build();
            
-       }
+       //}
        JsonArray codecheckArray = ccArrayBuilder.build();
+       JsonObject codecheckTitle = ccTitleBuilder.build();
        
        JsonObject dataManagerJSO = Json.createObjectBuilder()
-               .add(JSON_CODECHECK_TITLE, codecheckArray).build();
+               .add(JSON_CODECHECK_TITLE, dataManager.getTitle()).build();
        
          Map<String, Object> properties = new HashMap<>(1);
 	properties.put(JsonGenerator.PRETTY_PRINTING, true);
@@ -70,7 +75,7 @@ public class CodeCheckFiles implements AppFileComponent {
 	jsonWriter.close();
 
 	// INIT THE WRITER
-	OutputStream os = new FileOutputStream(filePath);
+	OutputStream os = new FileOutputStream(filePath  + ".json");
 	JsonWriter jsonFileWriter = Json.createWriter(os);
 	jsonFileWriter.writeObject(dataManagerJSO);
 	String prettyPrinted = sw.toString();
@@ -86,14 +91,19 @@ public class CodeCheckFiles implements AppFileComponent {
         CodeCheckData dataManager = (CodeCheckData) app.getDataComponent();
         dataManager.resetData();
         
-        JsonArray jsonCodeCheckArray = json.getJsonArray(JSON_CODECHECK_TITLE);
+        //JsonObject jsonCCObj = json.getJsonObject(filePath);
         
+        String ccTitle = json.getString(JSON_CODECHECK_TITLE);
         
         
         // HELPER METHOD FOR LOADING DATA FROM A JSON FORMAT
-        String codecheckTitle = dataManager.getTitle();
+        //String codecheckTitle = dataManager.getTitle();
         
-        app.getGUI().getPrimaryStage().setTitle(codecheckTitle);
+        
+        
+        String codecheckTitle = dataManager.getTitle();
+        dataManager.setTitle(ccTitle);
+        app.getGUI().getPrimaryStage().setTitle(ccTitle);
     }
     private JsonObject loadJSONFile(String jsonFilePath) throws IOException {
 	InputStream is = new FileInputStream(jsonFilePath);

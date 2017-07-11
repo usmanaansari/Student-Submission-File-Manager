@@ -30,6 +30,7 @@ and open the template in the editor.
     -fx-border-width: 1px;
     -fx-border-color: #b7b0b9;
 }
+
 .top_pane{
     -fx-background-color: #f2c9fb;
     -fx-background-radius: 5.0;
@@ -38,14 +39,53 @@ and open the template in the editor.
     -fx-border-width: 1px;
     -fx-border-color: #b7b0b9;
 }
-
+.head_pane{
+    -fx-background-color:#f2c9fb;
+    -fx-background-radius: 5.0;
+    -fx-padding: 15;
+    -fx-spacing: 10;
+    -fx-border-width: 1px;
+    -fx-border-color: #b7b0b9;
+}
+.right_pane{
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 5.0;
+    -fx-padding: 15;
+    -fx-spacing: 10;
+    -fx-border-width: 1px;
+    -fx-border-color: #b7b0b9;
+}
+.image_view{
+    -fx-scale-x: 1.85;
+    -fx-scale-y: 1.85;
+    -fx-translate-x: 340;
+    -fx-translate-y: 150;
+    
+}
+.create_new{
+    -fx-translate-y: 400;
+    -fx-translate-x: 350;
+    -fx-font-size: 26;
+}
+.left_pane{
+    -fx-background-color: #fbedfe;
+    -fx-background-radius: 5.0;
+    -fx-padding: 30 200 50 20;
+    -fx-spacing: 10;
+    -fx-border-width: 1px;
+    -fx-border-color: #b7b0b9;
+}
 .file_button{
     -fx-font-size: 20pt;
     -fx-padding: 5 50 5 50;
     -fx-border-radius: 10 10 10 10;
     -fx-background-radius: 10 10 10 10;
 }
-
+.x_button{
+    -fx-background-color: #f2c9fb;
+    -fx-translate-y: 5;
+    -fx-font-size: 30;
+}
 .prompt_label{
     -fx-font-size:20pt;
     -fx-font-weight:bold;

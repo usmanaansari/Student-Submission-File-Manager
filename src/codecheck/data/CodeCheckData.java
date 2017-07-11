@@ -49,4 +49,7 @@ public class CodeCheckData implements AppDataComponent {
     public String getWorkPath(){
         return workPath;
     }
+    public void setRecents(){
+        
+    }
 }
