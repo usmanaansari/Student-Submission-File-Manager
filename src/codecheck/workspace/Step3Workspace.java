@@ -8,6 +8,7 @@ package codecheck.workspace;
 import codecheck.CodeCheckApp;
 import static codecheck.CodeCheckProps.PROG2_LABEL;
 import static codecheck.CodeCheckProps.PROG3_LABEL;
+import static codecheck.CodeCheckProps.PROGP_LABEL;
 import static codecheck.CodeCheckProps.REFRESH_BUTTON;
 import static codecheck.CodeCheckProps.REMOVE_BUTTON;
 import static codecheck.CodeCheckProps.RENAME_BUTTON;
@@ -15,6 +16,7 @@ import static codecheck.CodeCheckProps.STEP2_DESC_LABEL;
 import static codecheck.CodeCheckProps.STEP2_LABEL;
 import static codecheck.CodeCheckProps.STEP3_DESC_LABEL;
 import static codecheck.CodeCheckProps.STEP3_LABEL;
+import static codecheck.CodeCheckProps.STEP3_TABLE;
 import static codecheck.CodeCheckProps.UNZIP_BUTTON;
 import static codecheck.CodeCheckProps.VIEW_BUTTON;
 import codecheck.data.CodeCheckData;
@@ -61,7 +63,7 @@ public class Step3Workspace {
    VBox RightBox;
    ProgressBar unzipProg;
    ProgressIndicator progInd;
-   
+   Label tableLabel;
    
    
    
@@ -83,7 +85,7 @@ public class Step3Workspace {
     Step3Label = new Label(props.getProperty(STEP3_LABEL));
     Step3Desc = new Label(props.getProperty(STEP3_DESC_LABEL));
     ProgLabel = new Label(props.getProperty(PROG3_LABEL));
-    
+    tableLabel = new Label(props.getProperty(STEP3_TABLE));
     Unzip = new Button(props.getProperty(UNZIP_BUTTON));
     Remove = new Button(props.getProperty(REMOVE_BUTTON));
     Refresh = new Button(props.getProperty(REFRESH_BUTTON));
@@ -96,9 +98,10 @@ public class Step3Workspace {
     LeftBox = new VBox();
     RightBox = new VBox();
     unzipProg = new ProgressBar();
-    progInd = new ProgressIndicator();
+    progInd = new ProgressIndicator(.47);
+    unzipProg.setProgress(progInd.getProgress());
     progInd.setProgress(50);
-    
+    ProgPercentLabel = new Label(props.getProperty(PROGP_LABEL));
     unzipProg.setMinSize(450, 15);
     unzipProg.setPadding(new Insets(25, 0, 0, 0));
     
@@ -109,11 +112,11 @@ public class Step3Workspace {
     SZips.setMinSize(900, 600);
     OutputWindow.setMinSize(900, 600);
     LeftBox.setPadding(new Insets(0, 0, 0, 10));
-    RightBox.setSpacing(10);
+    RightBox.setSpacing(45);
     
     buttons.getChildren().addAll(Remove, Refresh, View);
-    progBox.getChildren().addAll(ProgLabel, unzipProg);
-    LeftBox.getChildren().addAll(Step3Label, Step3Desc, SZips, buttons);
+    progBox.getChildren().addAll(ProgLabel, unzipProg,ProgPercentLabel);
+    LeftBox.getChildren().addAll(Step3Label, Step3Desc,tableLabel, SZips, buttons);
     RightBox.getChildren().addAll(progBox, Unzip, OutputWindow);
     MainBox.getChildren().addAll(LeftBox, RightBox);
     MainBox.setSpacing(50);
@@ -131,7 +134,8 @@ public class Step3Workspace {
         Step3Desc.getStyleClass().add(CLASS_PROMPT_LABEL);
         MainBox.getStyleClass().add(CLASS_BOX);
         buttons.getStyleClass().add(CLASS_BUTTONBOX);
-        
+        tableLabel.getStyleClass().add(CLASS_PROMPT_LABEL);
+        ProgPercentLabel.getStyleClass().add(CLASS_PROMPT_LABEL);
     }
     public HBox getStep3(){
         return MainBox;

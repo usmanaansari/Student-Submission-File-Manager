@@ -7,12 +7,16 @@ package codecheck.workspace;
 
 import codecheck.CodeCheckApp;
 import static codecheck.CodeCheckProps.ABOUT_BUTTON;
+import static codecheck.CodeCheckProps.ABOUT_PIC;
+import static codecheck.CodeCheckProps.ABOUT_TOOLTIP;
 import static codecheck.CodeCheckProps.CLOSE_CONFIRMATION;
 import static codecheck.CodeCheckProps.CLOSE_MESSAGE;
 import static codecheck.CodeCheckProps.HOME_BUTTON;
 import static codecheck.CodeCheckProps.NEXT_BUTTON;
 import static codecheck.CodeCheckProps.PREV_BUTTON;
 import static codecheck.CodeCheckProps.RENAME_BUTTON;
+import static codecheck.CodeCheckProps.RENAME_PIC;
+import static codecheck.CodeCheckProps.RENAME_TOOLTIP;
 import static codecheck.CodeCheckProps.WELC_LABEL;
 import codecheck.data.CodeCheckData;
 import djf.components.AppDataComponent;
@@ -20,7 +24,11 @@ import djf.components.AppWorkspaceComponent;
 import static djf.settings.AppPropertyType.APP_CSS;
 import static djf.settings.AppPropertyType.APP_PATH_CSS;
 import static djf.settings.AppPropertyType.LOAD_ICON;
+import static djf.settings.AppPropertyType.LOAD_TOOLTIP;
 import static djf.settings.AppPropertyType.NEW_ICON;
+import static djf.settings.AppPropertyType.NEW_TOOLTIP;
+import static djf.settings.AppStartupConstants.FILE_PROTOCOL;
+import static djf.settings.AppStartupConstants.PATH_IMAGES;
 import static djf.ui.AppGUI.CLASS_BORDERED_PANE;
 import static djf.ui.AppGUI.CLASS_FILE_BUTTON;
 import java.io.IOException;
@@ -35,6 +43,9 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.SplitPane;
+import javafx.scene.control.Tooltip;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
@@ -113,38 +124,37 @@ public class CodeCheckWorkspace extends AppWorkspaceComponent {
         work4 = new Step4Workspace(app);
         work5 = new Step5Workspace(app);
         welcwork = new WelcomeWorkspace(app);
-        
+        fileTool = app.getGUI().getFileToolbar();
+        top = app.getGUI().getTopToolbarPane();
+        StepTraverseBar = new FlowPane();
         welcome = new Stage();
         
         //work4 = new Step4Workspace(app);
         nextButton = new Button(props.getProperty(NEXT_BUTTON));
         prevButton = new Button(props.getProperty(PREV_BUTTON));
         homeButton = new Button(props.getProperty(HOME_BUTTON));
+        
         renameButton = new Button(props.getProperty(RENAME_BUTTON));
         aboutButton = new Button(props.getProperty(ABOUT_BUTTON));
-        newButton = new Button(props.getProperty(NEW_ICON));
+        //newButton = new Button(props.getProperty(NEW_ICON));
         loadButton = new Button(props.getProperty(LOAD_ICON));
+        
+        fileTool.getChildren().remove(0, 5);
+        newButton = initChildButton(fileTool, NEW_ICON.toString(), NEW_TOOLTIP.toString(), false);
+        loadButton = initChildButton(fileTool, LOAD_ICON.toString(), LOAD_TOOLTIP.toString(), false);
+        renameButton = initChildButton(fileTool, RENAME_PIC.toString(), RENAME_TOOLTIP.toString(), false);
+        aboutButton = initChildButton(fileTool, ABOUT_PIC.toString(), ABOUT_TOOLTIP.toString(), false);
+        
+        
         Title = new Label();
         Title.setText(data.getTitle());
-//        renameButton.setMinWidth(80);
-//        newButton.setMinWidth(80);
-//        loadButton.setMinWidth(80);
-//        aboutButton.setMinWidth(80);
-//        nextButton.setMinWidth(80);
-//        prevButton.setMinWidth(80);
-//        homeButton.setMinWidth(80);
-          
-//        newButton.setPadding(new Insets(10, 10, 10, 10));
-//        loadButton.setPadding(new Insets(10, 10, 10, 10));
-//        renameButton.setPadding(new Insets(10, 10, 10, 10));
-//        aboutButton.setPadding(new Insets(10, 10, 10, 10));
+
         homeButton.setDisable(true);
         prevButton.setDisable(true);
         nextButton.setDisable(true);
-        StepTraverseBar = new FlowPane();
+        
         StepTraverseBar.getChildren().addAll(homeButton, prevButton, nextButton);
-        fileTool = app.getGUI().getFileToolbar();
-        top = app.getGUI().getTopToolbarPane();
+        
         
         
         appPane = app.getGUI().getAppPane();
@@ -160,13 +170,7 @@ public class CodeCheckWorkspace extends AppWorkspaceComponent {
         loadButton.setMinWidth(150);
         
 //        renameButton.prefWidthProperty().bind(fileTool.widthProperty().multiply(.2));
-//        newButton.prefWidthProperty().bind(fileTool.widthProperty().multiply(.2));
-//        loadButton.prefWidthProperty().bind(fileTool.widthProperty().multiply(.2));
-//        aboutButton.prefWidthProperty().bind(fileTool.widthProperty().multiply(.2));
-//        
-//        homeButton.prefWidthProperty().bind(StepTraverseBar.widthProperty().multiply(.2));
-//        nextButton.prefWidthProperty().bind(StepTraverseBar.widthProperty().multiply(.2));
-//        prevButton.prefWidthProperty().bind(StepTraverseBar.widthProperty().multiply(.2));
+
         
         app.getGUI().getTopToolbarPane().getChildren().add(StepTraverseBar);
         //StepTraverseBar.setPadding(new Insets(20, 10, 20, 0));
@@ -176,8 +180,7 @@ public class CodeCheckWorkspace extends AppWorkspaceComponent {
         Step3 = work3.getStep3();
         Step4 = work4.getStep4();
         Step5 = work5.getStep5();
-        fileTool.getChildren().remove(0, 5);
-        fileTool.getChildren().addAll(newButton, loadButton, renameButton, aboutButton);
+        
         //app.getGUI().getWindow().setTitle(Title.getText());
         
         //Set StyleSheet for WelcomeWindow
@@ -206,7 +209,7 @@ public class CodeCheckWorkspace extends AppWorkspaceComponent {
         
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setTitle(props.getProperty(CLOSE_CONFIRMATION));
-            alert.setContentText(props.getProperty(CLOSE_MESSAGE));
+            alert.setContentText(props.getProperty(CLOSE_CONFIRMATION));
 
             Optional<ButtonType> result = alert.showAndWait();
             if (result.get() == ButtonType.OK){
@@ -337,5 +340,25 @@ public class CodeCheckWorkspace extends AppWorkspaceComponent {
     }
     public Stage getWelcome(){
         return welcome;
+    }
+    public Button initChildButton(Pane toolbar, String icon, String tooltip, boolean disabled) {
+        PropertiesManager props = PropertiesManager.getPropertiesManager();
+	
+	// LOAD THE ICON FROM THE PROVIDED FILE
+        String imagePath = FILE_PROTOCOL + PATH_IMAGES + props.getProperty(icon);
+        Image buttonImage = new Image(imagePath);
+	
+	// NOW MAKE THE BUTTON
+        Button button = new Button();
+        button.setDisable(disabled);
+        button.setGraphic(new ImageView(buttonImage));
+        Tooltip buttonTooltip = new Tooltip(props.getProperty(tooltip));
+        button.setTooltip(buttonTooltip);
+	
+	// PUT THE BUTTON IN THE TOOLBAR
+        toolbar.getChildren().add(button);
+	
+	// AND RETURN THE COMPLETED BUTTON
+        return button;
     }
 }

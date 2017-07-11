@@ -13,6 +13,7 @@ import static codecheck.CodeCheckProps.JCHECK_LABEL;
 import static codecheck.CodeCheckProps.JSCHECK_LABEL;
 import static codecheck.CodeCheckProps.PROG3_LABEL;
 import static codecheck.CodeCheckProps.PROG4_LABEL;
+import static codecheck.CodeCheckProps.PROGP_LABEL;
 import static codecheck.CodeCheckProps.REFRESH_BUTTON;
 import static codecheck.CodeCheckProps.REMOVE_BUTTON;
 import static codecheck.CodeCheckProps.SFT_LABEL;
@@ -20,6 +21,7 @@ import static codecheck.CodeCheckProps.STEP3_DESC_LABEL;
 import static codecheck.CodeCheckProps.STEP3_LABEL;
 import static codecheck.CodeCheckProps.STEP4_DESC_LABEL;
 import static codecheck.CodeCheckProps.STEP4_LABEL;
+import static codecheck.CodeCheckProps.STEP4_TABLE;
 import static codecheck.CodeCheckProps.UNZIP_BUTTON;
 import static codecheck.CodeCheckProps.VIEW_BUTTON;
 import codecheck.data.CodeCheckData;
@@ -90,7 +92,7 @@ public class Step4Workspace {
    HBox TypesBox2;
    HBox TypesBox3;
    VBox TypesBox;
-   
+   Label tableLabel;
    
    
    
@@ -111,7 +113,7 @@ public class Step4Workspace {
     Step4Label = new Label(props.getProperty(STEP4_LABEL));
     Step4Desc = new Label(props.getProperty(STEP4_DESC_LABEL));
     ProgLabel = new Label(props.getProperty(PROG4_LABEL));
-    
+    tableLabel = new Label(props.getProperty(STEP4_TABLE));
     ExtractCode = new Button(props.getProperty(EXTRACTCODE_BUTTON));
     Remove = new Button(props.getProperty(REMOVE_BUTTON));
     Refresh = new Button(props.getProperty(REFRESH_BUTTON));
@@ -123,7 +125,7 @@ public class Step4Workspace {
     MainBox = new HBox();
     LeftBox = new VBox();
     RightBox = new VBox();
-    extCodeProg = new ProgressBar();
+    extCodeProg = new ProgressBar(.47);
     progInd = new ProgressIndicator();
     FileTypes = new GridPane();
     progInd.setProgress(50);
@@ -144,14 +146,14 @@ public class Step4Workspace {
     TypesBox1 = new HBox(123);
     TypesBox2 = new HBox(1234);
     TypesBox3 = new HBox();
-    
+    ProgPercentLabel = new Label(props.getProperty(PROGP_LABEL));
     View.prefWidthProperty().bind(buttons.widthProperty().multiply(.2));
     Remove.prefWidthProperty().bind(buttons.widthProperty().multiply(.2));
     Refresh.prefWidthProperty().bind(buttons.widthProperty().multiply(.2));
     zipFiles.setMinSize(900, 300);
     OutputWindow.setMinSize(900, 400);
     LeftBox.setPadding(new Insets(0, 0, 0, 10));
-    RightBox.setSpacing(10);
+    RightBox.setSpacing(45);
     JSCheck.setAlignment(Pos.CENTER_LEFT);
     
     CSCheck.setAlignment(Pos.CENTER_LEFT);
@@ -164,8 +166,8 @@ public class Step4Workspace {
     TypesBox3.setSpacing(10);
     
     buttons.getChildren().addAll(Remove, Refresh, View);
-    progBox.getChildren().addAll(ProgLabel, extCodeProg);
-    LeftBox.getChildren().addAll(Step4Label, Step4Desc, zipFiles, buttons, FileTL, TypesBox);
+    progBox.getChildren().addAll(ProgLabel, extCodeProg,ProgPercentLabel);
+    LeftBox.getChildren().addAll(Step4Label, Step4Desc, tableLabel, zipFiles, buttons, FileTL, TypesBox);
     RightBox.getChildren().addAll(progBox, ExtractCode, OutputWindow);
     MainBox.getChildren().addAll(LeftBox, RightBox);
     MainBox.setSpacing(50);
@@ -194,6 +196,8 @@ public class Step4Workspace {
         CSCheck.getStyleClass().add(CLASS_CHECKBOX);
         CustomCheck.getStyleClass().add(CLASS_CHECKBOX);
         TypesBox.getStyleClass().add(CLASS_FTYPE_BOX);
+        tableLabel.getStyleClass().add(CLASS_PROMPT_LABEL);
+        ProgPercentLabel.getStyleClass().add(CLASS_PROMPT_LABEL);
     }
     public HBox getStep4(){
         return MainBox;

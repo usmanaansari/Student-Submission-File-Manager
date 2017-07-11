@@ -72,7 +72,7 @@ public class WelcomeController {
                     directories.add(new File(CC.getPath() + "\\submissions"));
                     directories.add(new File(CC.getPath() + "\\projects"));
                     directories.add(new File(CC.getPath() + "\\code"));
-                    data.addCodeCheck(codeC);
+                    data.addCodeCheck(title, path);
                     
                     for(File f : directories) {
                         if(f.mkdir()) {
@@ -82,7 +82,7 @@ public class WelcomeController {
                           System.out.println(f.getPath() + " not made");
                         }
                     }
-                    //fix this app.getGUI().getPrimaryStage().setTitle("Code Check - "+ title);
+                    app.getGUI().getPrimaryStage().setTitle("Code Check - "+ title);
                     
                     //data.setTitle(title);
                 

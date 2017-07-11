@@ -9,12 +9,14 @@ import codecheck.CodeCheckApp;
 import static codecheck.CodeCheckProps.CODECHECK_BUTTON;
 import static codecheck.CodeCheckProps.PROG3_LABEL;
 import static codecheck.CodeCheckProps.PROG5_LABEL;
+import static codecheck.CodeCheckProps.PROGP_LABEL;
 import static codecheck.CodeCheckProps.REFRESH_BUTTON;
 import static codecheck.CodeCheckProps.REMOVE_BUTTON;
 import static codecheck.CodeCheckProps.STEP3_DESC_LABEL;
 import static codecheck.CodeCheckProps.STEP3_LABEL;
 import static codecheck.CodeCheckProps.STEP5_DESC_LABEL;
 import static codecheck.CodeCheckProps.STEP5_LABEL;
+import static codecheck.CodeCheckProps.STEP5_TABLE;
 import static codecheck.CodeCheckProps.UNZIP_BUTTON;
 import static codecheck.CodeCheckProps.VIEWRESULTS_BUTTON;
 import static codecheck.CodeCheckProps.VIEW_BUTTON;
@@ -64,7 +66,7 @@ public class Step5Workspace {
    ProgressBar checkProg;
    ProgressIndicator progInd;
    HBox rightBBox;
-   
+   Label tableLabel;
    
    
    
@@ -85,7 +87,8 @@ public class Step5Workspace {
     Step5Label = new Label(props.getProperty(STEP5_LABEL));
     Step5Desc = new Label(props.getProperty(STEP5_DESC_LABEL));
     ProgLabel = new Label(props.getProperty(PROG5_LABEL));
-    
+    tableLabel = new Label(props.getProperty(STEP5_TABLE));
+    ProgPercentLabel = new Label(props.getProperty(PROGP_LABEL));
     CodeCheckB = new Button(props.getProperty(CODECHECK_BUTTON));
     ViewResults = new Button(props.getProperty(VIEWRESULTS_BUTTON));
     Remove = new Button(props.getProperty(REMOVE_BUTTON));
@@ -99,8 +102,8 @@ public class Step5Workspace {
     LeftBox = new VBox();
     RightBox = new VBox();
     checkProg = new ProgressBar();
-    progInd = new ProgressIndicator();
-    progInd.setProgress(50);
+    progInd = new ProgressIndicator(.47);
+    checkProg.setProgress(progInd.getProgress());
     rightBBox = new HBox();
     checkProg.setMinSize(450, 15);
     checkProg.setPadding(new Insets(25, 0, 0, 0));
@@ -112,11 +115,11 @@ public class Step5Workspace {
     SWork.setMinSize(900, 600);
     OutputWindow.setMinSize(900, 600);
     LeftBox.setPadding(new Insets(0, 0, 0, 10));
-    RightBox.setSpacing(10);
+    RightBox.setSpacing(45);
     rightBBox.getChildren().addAll(CodeCheckB, ViewResults);
     buttons.getChildren().addAll(Remove, Refresh, View);
-    progBox.getChildren().addAll(ProgLabel, checkProg);
-    LeftBox.getChildren().addAll(Step5Label, Step5Desc, SWork, buttons);
+    progBox.getChildren().addAll(ProgLabel, checkProg,ProgPercentLabel);
+    LeftBox.getChildren().addAll(Step5Label, Step5Desc,tableLabel, SWork, buttons);
     RightBox.getChildren().addAll(progBox, rightBBox, OutputWindow);
     MainBox.getChildren().addAll(LeftBox, RightBox);
     MainBox.setSpacing(50);
@@ -135,7 +138,8 @@ public class Step5Workspace {
         Step5Desc.getStyleClass().add(CLASS_PROMPT_LABEL);
         MainBox.getStyleClass().add(CLASS_BOX);
         buttons.getStyleClass().add(CLASS_BUTTONBOX);
-        
+        tableLabel.getStyleClass().add(CLASS_PROMPT_LABEL);
+        ProgPercentLabel.getStyleClass().add(CLASS_PROMPT_LABEL);
     }
     public HBox getStep5(){
         return MainBox;

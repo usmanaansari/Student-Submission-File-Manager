@@ -9,13 +9,16 @@ import codecheck.CodeCheckApp;
 import static codecheck.CodeCheckProps.EXTRACT_BUTTON;
 import static codecheck.CodeCheckProps.PROG1_LABEL;
 import static codecheck.CodeCheckProps.PROG2_LABEL;
+import static codecheck.CodeCheckProps.PROGP_LABEL;
 import static codecheck.CodeCheckProps.REFRESH_BUTTON;
 import static codecheck.CodeCheckProps.REMOVE_BUTTON;
 import static codecheck.CodeCheckProps.RENAME_BUTTON;
 import static codecheck.CodeCheckProps.STEP1_DESC_LABEL;
 import static codecheck.CodeCheckProps.STEP1_LABEL;
+import static codecheck.CodeCheckProps.STEP1_TABLE;
 import static codecheck.CodeCheckProps.STEP2_DESC_LABEL;
 import static codecheck.CodeCheckProps.STEP2_LABEL;
+import static codecheck.CodeCheckProps.STEP2_TABLE;
 import static codecheck.CodeCheckProps.VIEW_BUTTON;
 import codecheck.data.CodeCheckData;
 import static codecheck.style.CodeCheckStyle.CLASS_BOX;
@@ -61,7 +64,7 @@ public class Step2Workspace {
    VBox RightBox;
    ProgressBar extProg;
    ProgressIndicator progInd;
-   
+   Label tableLabel;
    
    
    
@@ -83,7 +86,7 @@ public class Step2Workspace {
     Step2Label = new Label(props.getProperty(STEP2_LABEL));
     Step2Desc = new Label(props.getProperty(STEP2_DESC_LABEL));
     ProgLabel = new Label(props.getProperty(PROG2_LABEL));
-    
+    tableLabel = new Label(props.getProperty(STEP2_TABLE));
     Rename = new Button(props.getProperty(RENAME_BUTTON));
     Remove = new Button(props.getProperty(REMOVE_BUTTON));
     Refresh = new Button(props.getProperty(REFRESH_BUTTON));
@@ -96,9 +99,9 @@ public class Step2Workspace {
     LeftBox = new VBox();
     RightBox = new VBox();
     extProg = new ProgressBar();
-    progInd = new ProgressIndicator();
-    progInd.setProgress(50);
-    
+    progInd = new ProgressIndicator(.47);
+    extProg.setProgress(progInd.getProgress());
+    ProgPercentLabel = new Label(props.getProperty(PROGP_LABEL));
     extProg.setMinSize(450, 15);
     extProg.setPadding(new Insets(25, 0, 0, 0));
     
@@ -109,11 +112,11 @@ public class Step2Workspace {
     SSubs.setMinSize(900, 600);
     OutputWindow.setMinSize(900, 600);
     LeftBox.setPadding(new Insets(0, 0, 0, 10));
-    RightBox.setSpacing(10);
+    RightBox.setSpacing(45);
     
     buttons.getChildren().addAll(Remove, Refresh, View);
-    progBox.getChildren().addAll(ProgLabel, extProg);
-    LeftBox.getChildren().addAll(Step2Label, Step2Desc, SSubs, buttons);
+    progBox.getChildren().addAll(ProgLabel, extProg, ProgPercentLabel);
+    LeftBox.getChildren().addAll(Step2Label, Step2Desc, tableLabel, SSubs, buttons);
     RightBox.getChildren().addAll(progBox, Rename, OutputWindow);
     MainBox.getChildren().addAll(LeftBox, RightBox);
     MainBox.setSpacing(50);
@@ -131,6 +134,8 @@ public class Step2Workspace {
         Step2Desc.getStyleClass().add(CLASS_PROMPT_LABEL);
         MainBox.getStyleClass().add(CLASS_BOX);
         buttons.getStyleClass().add(CLASS_BUTTONBOX);
+        tableLabel.getStyleClass().add(CLASS_PROMPT_LABEL);
+        ProgPercentLabel.getStyleClass().add(CLASS_PROMPT_LABEL);
         
     }
     public HBox getStep2(){

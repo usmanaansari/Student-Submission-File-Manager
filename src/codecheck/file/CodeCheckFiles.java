@@ -103,7 +103,7 @@ public class CodeCheckFiles implements AppFileComponent {
         
         String codecheckTitle = dataManager.getTitle();
         dataManager.setTitle(ccTitle);
-        app.getGUI().getPrimaryStage().setTitle(ccTitle);
+        app.getGUI().getPrimaryStage().setTitle("Code Check - " + ccTitle);
     }
     private JsonObject loadJSONFile(String jsonFilePath) throws IOException {
 	InputStream is = new FileInputStream(jsonFilePath);

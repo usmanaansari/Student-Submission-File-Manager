@@ -220,7 +220,8 @@ public class CodeCheckController {
         Alert alert = new Alert(AlertType.INFORMATION);
         alert.setTitle(props.getProperty(ABOUT_TITLE));
         alert.setContentText(props.getProperty(ABOUT_MESSAGE));
-
+        alert.setHeight(700);
+        alert.setWidth(700);
         alert.showAndWait();        
     }
     
