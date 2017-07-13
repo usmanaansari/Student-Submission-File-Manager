@@ -180,7 +180,7 @@ public class CodeCheckWorkspace extends AppWorkspaceComponent {
         Step3 = work3.getStep3();
         Step4 = work4.getStep4();
         Step5 = work5.getStep5();
-        
+        renameButton.setDisable(true);
         //app.getGUI().getWindow().setTitle(Title.getText());
         
         //Set StyleSheet for WelcomeWindow
@@ -196,7 +196,7 @@ public class CodeCheckWorkspace extends AppWorkspaceComponent {
         //welcome.show();
         
         //app.getGUI().getPrimaryStage().close();
-        workspace = Step1;
+        workspace = Step0;
         
         //fileTool.setPadding(new Insets(0, 20, 10, 20));
         
@@ -205,18 +205,18 @@ public class CodeCheckWorkspace extends AppWorkspaceComponent {
     
     private void initControllers(){
         app.getGUI().getPrimaryStage().setOnCloseRequest(e ->{
-           PropertiesManager props = PropertiesManager.getPropertiesManager();
-        
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-            alert.setTitle(props.getProperty(CLOSE_CONFIRMATION));
-            alert.setContentText(props.getProperty(CLOSE_CONFIRMATION));
-
-            Optional<ButtonType> result = alert.showAndWait();
-            if (result.get() == ButtonType.OK){
-                app.getGUI().getPrimaryStage().close();
-            } else {
-                e.consume();
-            }
+//           PropertiesManager props = PropertiesManager.getPropertiesManager();
+//        
+//            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+//            alert.setTitle(props.getProperty(CLOSE_CONFIRMATION));
+//            alert.setContentText(props.getProperty(CLOSE_CONFIRMATION));
+//
+//            Optional<ButtonType> result = alert.showAndWait();
+//            if (result.get() == ButtonType.OK){
+//                app.getGUI().getPrimaryStage().close();
+//            } else {
+//                e.consume();
+//            }
         });
         newButton.setOnAction(e -> {
             try {
@@ -328,9 +328,11 @@ public class CodeCheckWorkspace extends AppWorkspaceComponent {
     
     @Override
     public void resetWorkspace() {
+        workspace = Step1;
         nextButton.setDisable(false);
         homeButton.setDisable(true);
         prevButton.setDisable(true);
+        renameButton.setDisable(false);
         appPane.setCenter(Step1);
     }
 

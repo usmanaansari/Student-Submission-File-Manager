@@ -7,6 +7,7 @@ package codecheck.data;
 
 import codecheck.CodeCheckApp;
 import djf.components.AppDataComponent;
+import java.io.File;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -19,12 +20,15 @@ public class CodeCheckData implements AppDataComponent {
     String CodeCheckTitle;
     String workPath;
     ObservableList<CodeCheck> codechecks;
-    
-    
+    ObservableList<String> names;
+    ObservableList<String> bbs;
+    File workFile;
+    File bbFile;
     public CodeCheckData(CodeCheckApp initApp) {
     CodeCheckTitle = "";
     codechecks = FXCollections.observableArrayList();
     workPath = "C:\\Users\\Usman\\Desktop\\219\\CodeCheckProj\\CodeCheck\\work\\"; 
+    workFile = new File(workPath); 
     }
    
     @Override
@@ -42,14 +46,43 @@ public class CodeCheckData implements AppDataComponent {
         CodeCheck code = new CodeCheck(title, path);
         codechecks.add(code);
     }
-   
-    public ObservableList getCodeChecks(){
+    public void addCodeCheck1(CodeCheck code){
+        codechecks.add(code);
+    }
+    public ObservableList<String> getCodeCheckNames(){
+        names = FXCollections.observableArrayList();
+    for(File file : workFile.listFiles()){
+       if(file.isDirectory()){
+            addCodeCheck(file.getName(),file.getPath());
+            names.add(file.getName());
+            
+           }
+        }
+        return names;
+    }
+    public ObservableList<CodeCheck> getCodeChecks(){
         return codechecks;
+    }
+    public ObservableList<String> getBlackBoardSubs(){
+        bbs = FXCollections.observableArrayList();
+        for(File file : workFile.listFiles()){
+            if(file.isDirectory()){
+            File bbFile = new File(file.getPath() + "blackboard\\");
+            for(File file1 : bbFile.listFiles()){
+                bbs.add(file1.getName());
+            }
+            }
+        }
+        System.out.println("Yo" + bbs.size());
+        return bbs;
     }
     public String getWorkPath(){
         return workPath;
     }
     public void setRecents(){
         
+    }
+    public File getWorkFile(){
+        return workFile;
     }
 }

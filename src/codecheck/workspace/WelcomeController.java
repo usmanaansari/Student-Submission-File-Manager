@@ -18,12 +18,15 @@ import static djf.settings.AppPropertyType.NEW_COMPLETED_MESSAGE;
 import static djf.settings.AppPropertyType.NEW_COMPLETED_TITLE;
 import djf.ui.AppMessageDialogSingleton;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.TextInputDialog;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.VBox;
 import properties_manager.PropertiesManager;
 
 /**
@@ -32,17 +35,22 @@ import properties_manager.PropertiesManager;
  */
 public class WelcomeController {
      CodeCheckApp app;
-    
+     BorderPane appPane;
     public WelcomeController(CodeCheckApp initApp){
         app = initApp;
+        appPane = app.getGUI().getAppPane();
     }
     
-    public void handleNew(){
-        CodeCheckWorkspace work = (CodeCheckWorkspace) app.getWorkspaceComponent();
+    public void handleNew() throws IOException{
+        CodeCheckWorkspace work1 = (CodeCheckWorkspace) app.getWorkspaceComponent();
+        WelcomeWorkspace work = work1.welcwork;
         CodeCheckData data = (CodeCheckData) app.getDataComponent();
         
         AppMessageDialogSingleton dialog = AppMessageDialogSingleton.getSingleton();
 	PropertiesManager props = PropertiesManager.getPropertiesManager();
+        VBox leftBox = work.leftBox;
+        VBox rightBox = work.rightBox;
+        BorderPane headPane = work.headPane;
         
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle(props.getProperty(NEW_CONFIRMATION));
@@ -61,7 +69,7 @@ public class WelcomeController {
             if(result1.isPresent()){
                 String title = result1.get();
                 
-                String path= "C:\\Users\\Usman\\Desktop\\219\\Final\\codecheckproject\\CodeCheck\\work\\" + title;
+                String path= "C:\\Users\\Usman\\Desktop\\219\\CodeCheckProj\\CodeCheck\\work\\" + title;
                 
                 CodeCheck codeC = new CodeCheck(title, path);
                 File CC = new File(codeC.getPath());
@@ -82,9 +90,9 @@ public class WelcomeController {
                           System.out.println(f.getPath() + " not made");
                         }
                     }
-                    app.getGUI().getPrimaryStage().setTitle("Code Check - "+ title);
+                    //app.getGUI().getPrimaryStage().setTitle("Code Check - "+ title);
                     
-                    //data.setTitle(title);
+                    data.setTitle(title);
                 
                     // WE MAY HAVE TO SAVE CURRENT WORK
                     boolean continueToMakeNew = true;
@@ -101,7 +109,16 @@ public class WelcomeController {
 
                     // MAKE SURE THE WORKSPACE IS ACTIVATED
                     app.getWorkspaceComponent().activateWorkspace(app.getGUI().getAppPane());
-		
+                    app.getFileComponent().saveData(data, path+"File");
+                    appPane.getChildren().remove(headPane);
+                    appPane.getChildren().remove(leftBox);
+                    appPane.getChildren().remove(rightBox);
+                    
+                    appPane.setTop(app.getGUI().getTopToolbarPane());
+                    
+                    app.getGUI().getPrimaryStage().setTitle("Code Check - " + title);
+                    appPane.setCenter(work1.Step1);
+                    
                     //app.getWorkspaceComponent().getWorkspace().
                     // REFRESH THE GUI, WHICH WILL ENABLE AND DISABLE
                     // THE APPROPRIATE CONTROLS
@@ -118,6 +135,21 @@ public class WelcomeController {
                 }
             }
     }
+    }
+    public void handleX(){
+        CodeCheckWorkspace work1 = (CodeCheckWorkspace) app.getWorkspaceComponent();
+        WelcomeWorkspace work = work1.welcwork;
+        VBox leftBox = work.leftBox;
+        VBox rightBox = work.rightBox;
+        BorderPane headPane = work.headPane;
+        
+        appPane.getChildren().remove(headPane);
+        appPane.getChildren().remove(leftBox);
+        appPane.getChildren().remove(rightBox);
+        //initTopToolbar(app);
+        //initFileToolbarStyle();
+        appPane.setTop(app.getGUI().getTopToolbarPane());
+        //app.buildAppComponentsHook();
     }
 }
 

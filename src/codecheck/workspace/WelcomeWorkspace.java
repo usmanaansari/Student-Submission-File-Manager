@@ -12,12 +12,22 @@ import static codecheck.CodeCheckProps.WELC_LABEL;
 import static codecheck.CodeCheckProps.XBUTTON;
 import codecheck.data.CodeCheckData;
 import static codecheck.style.CodeCheckStyle.CLASS_BOX;
+import static codecheck.style.CodeCheckStyle.CLASS_HEAD_PANE;
+import static codecheck.style.CodeCheckStyle.CLASS_LEFT_WPANE;
 import static codecheck.style.CodeCheckStyle.CLASS_NEWCC_LABEL;
 import static codecheck.style.CodeCheckStyle.CLASS_PROMPT_LABEL;
+import static codecheck.style.CodeCheckStyle.CLASS_RIGHT_WPANE;
 import static codecheck.style.CodeCheckStyle.CLASS_WLEFT_BOX;
+import static codecheck.style.CodeCheckStyle.CLASS_XB;
 import static djf.settings.AppStartupConstants.FILE_PROTOCOL;
 import static djf.settings.AppStartupConstants.PATH_IMAGES;
 import static djf.ui.AppGUI.CLASS_BORDERED_PANE;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -58,10 +68,13 @@ public class WelcomeWorkspace {
     SplitPane MainBox;
     Pane whole;
     Image image;
+    BorderPane appPane;
     
     public WelcomeWorkspace(CodeCheckApp initApp){
         app = initApp;
         controller = new WelcomeController(app);
+        data = (CodeCheckData) app.getDataComponent();
+        work = (CodeCheckWorkspace) app.getWorkspaceComponent();
         initLayout();
         initControllers();
         initStyle();
@@ -75,6 +88,7 @@ public class WelcomeWorkspace {
       ccImage.setX(1500);
       ccImage.setY(1500);
       
+      appPane = app.getGUI().getAppPane();
     
     leftBox = new VBox();
     rightBox = new VBox();
@@ -107,32 +121,125 @@ public class WelcomeWorkspace {
     
     headPane.setLeft(welcTitle);
     headPane.setRight(xButton);
-    
+    rec1 = new Hyperlink();
+    rec2 = new Hyperlink();
+    rec3 = new Hyperlink();
+    rec4 = new Hyperlink();
+    rec5 = new Hyperlink();
     //app.getGUI().getAppPane().setTop(headPane);
-    
+    ArrayList<String> files = folders(data.getWorkPath());
+    System.out.print(files);
+    File file = new File(data.getWorkPath());
+        switch (file.listFiles().length) {
+            case 0:
+                System.out.print("Folder empty");
+                break;
+            case 3:
+                rec5.setText(files.get(0));
+                //rec2.setText(files.get(1));
+                //rec3.setText(files.get(2));
+                //rec4.setText(files.get(3));
+                //rec5.setText(files.get(4));
+                break;
+            case 6:
+                rec4.setText(files.get(0));
+                rec5.setText(files.get(1));
+                break;
+            case 9:
+                rec5.setText(files.get(0));
+                rec4.setText(files.get(1));
+                rec3.setText(files.get(2));
+                break;
+            case 12:
+                rec5.setText(files.get(0));
+                rec4.setText(files.get(1));
+                rec3.setText(files.get(2));
+                rec2.setText(files.get(3));
+                break;
+            case 15:
+                rec5.setText(files.get(0));
+                rec4.setText(files.get(1));
+                rec3.setText(files.get(2));
+                rec2.setText(files.get(3));
+                rec1.setText(files.get(4));
+                break;
+            default:
+                break;
+        }
     rightBox.getChildren().addAll(ccImage, newWorkBox);
-    leftBox.getChildren().addAll(recentWork);
-    MainBox.getItems().addAll(leftBox,rightBox);
+    leftBox.getChildren().addAll(recentWork, rec5, rec4, rec3, rec2, rec1);
+    //MainBox.getItems().addAll(leftBox,rightBox);
     MainBox.setDividerPositions(0.3);
-    whole.getChildren().add(MainBox);
+   // whole.getChildren().add(MainBox);
     
+    app.getGUI().getAppPane().setLeft(leftBox);
+    app.getGUI().getAppPane().setCenter(rightBox);
+    app.getGUI().getAppPane().setTop(headPane);
     
     }
     private void initControllers(){
         newCodeCheck.setOnAction( e -> {
-            controller.handleNew();
+            try {
+                controller.handleNew();
+            } catch (IOException ex) {
+                Logger.getLogger(WelcomeWorkspace.class.getName()).log(Level.SEVERE, null, ex);
+            }
         });
+        xButton.setOnAction(e-> {
+            controller.handleX();
+    });
     }
     private void initStyle(){
-        recentWork.getStyleClass().add(CLASS_PROMPT_LABEL);
-        //welcTitle.getStyleClass().add(CLASS_PROMPT_LABEL);
-        leftBox.getStyleClass().add(CLASS_WLEFT_BOX);
-        //rightBox.getStyleClass().add(CLASS_BOX);
-        newCodeCheck.getStyleClass().add(CLASS_NEWCC_LABEL);
-        headPane.getStyleClass().add(CLASS_BORDERED_PANE);
+    newCodeCheck.getStyleClass().add(CLASS_NEWCC_LABEL);
+    headPane.getStyleClass().add(CLASS_HEAD_PANE);
+    rightBox.getStyleClass().add(CLASS_RIGHT_WPANE);
+    leftBox.getStyleClass().add(CLASS_LEFT_WPANE);
+    recentWork.getStyleClass().add(CLASS_PROMPT_LABEL);
+    welcTitle.getStyleClass().add(CLASS_PROMPT_LABEL);
+    xButton.getStyleClass().add(CLASS_XB);
     }
     public Pane getWelc(){
         return whole;
+    }
+    public VBox getLeft(){
+        return leftBox;
+    }
+    public VBox getRight(){
+        return rightBox;
+    }
+    public BorderPane getHeadPane(){
+        return headPane;
+    }
+    private ArrayList<String> folders(String name){
+    
+    
+    File codeDir = new File(name);
+    ArrayList<String> work = new ArrayList();
+    ArrayList<Long> dateList = new ArrayList();
+    File[] yo = codeDir.listFiles();
+    for(File f : yo){
+        if(f.isDirectory()){
+            dateList.add(f.lastModified());
+            
+        }
+    }
+    Collections.sort(dateList);
+//    for(int i = 0; i < dateList.size(); i ++){
+//        for(int j = 0; j< yo.length; j++){
+//            if(yo[i].lastModified() == dateList.get(i)){
+//                work.add(yo[i].getName());
+//            }
+//        }
+//    }
+    for(Long date : dateList){
+        for(File file : yo){
+            if(file.lastModified() == date){
+                work.add(file.getName());
+            }
+        }
+    }
+    return work;
+    
     }
 }
 

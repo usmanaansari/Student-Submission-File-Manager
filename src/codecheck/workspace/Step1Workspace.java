@@ -21,6 +21,10 @@ import static codecheck.style.CodeCheckStyle.CLASS_BUTTONBOX;
 import static codecheck.style.CodeCheckStyle.CLASS_BUTTONBOX_BUTTONS;
 import static codecheck.style.CodeCheckStyle.CLASS_PROMPT_LABEL;
 import static djf.ui.AppGUI.CLASS_FILE_BUTTON;
+import java.io.File;
+import java.util.ArrayList;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -64,9 +68,10 @@ public class Step1Workspace {
    ProgressIndicator progInd;
    Label tableLabel;
    
+   File workFile;
    
-   
-   
+   ObservableList<String> names;
+   ObservableList<String> bbs;
    public Step1Workspace(CodeCheckApp initApp){
        app = initApp;
        
@@ -81,6 +86,7 @@ public class Step1Workspace {
    
     private void initLayout(){
     PropertiesManager props = PropertiesManager.getPropertiesManager();
+    CodeCheckData data = (CodeCheckData) app.getDataComponent();
     Step1Label = new Label(props.getProperty(STEP1_LABEL));
     Step1Desc = new Label(props.getProperty(STEP1_DESC_LABEL));
     ProgLabel = new Label(props.getProperty(PROG1_LABEL));
@@ -93,6 +99,7 @@ public class Step1Workspace {
     buttons = new HBox();
     progBox = new HBox();
     BBSubs = new ListView();
+    BBSubs.setMinSize(900, 600);
     OutputWindow = new TextArea();
     MainBox = new HBox();
     LeftBox = new VBox();
@@ -105,10 +112,29 @@ public class Step1Workspace {
     extProg.setPadding(new Insets(25, 0, 0, 0));
     
     
+    
+    bbs = FXCollections.observableArrayList();
+        for(File file : data.getWorkFile().listFiles()){
+            if(file.isDirectory()){
+            File bbFile = new File(file.getPath() + "\\blackboard\\");
+            //System.out.println(bbFile.getPath());
+            if(bbFile.isDirectory()){
+            for(File file1 : bbFile.listFiles()){
+                bbs.add(file1.getName());
+            }
+            }
+            }
+        }
+    System.out.print(bbs.toString());
+    //System.out.println(data.getCodeChecks().toString());
+    BBSubs.setItems(bbs);
+    
     View.prefWidthProperty().bind(buttons.widthProperty().multiply(.2));
     Remove.prefWidthProperty().bind(buttons.widthProperty().multiply(.2));
     Refresh.prefWidthProperty().bind(buttons.widthProperty().multiply(.2));
-    BBSubs.setMinSize(900, 600);
+    
+    
+    
     OutputWindow.setMinSize(900, 600);
     LeftBox.setPadding(new Insets(0, 0, 0, 10));
     RightBox.setSpacing(45);
