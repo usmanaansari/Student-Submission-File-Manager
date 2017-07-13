@@ -14,6 +14,8 @@ import static codecheck.CodeCheckProps.NEW_CONTENT;
 import static codecheck.CodeCheckProps.NEW_TITLE;
 import codecheck.data.CodeCheck;
 import codecheck.data.CodeCheckData;
+import static djf.settings.AppPropertyType.LOAD_ERROR_MESSAGE;
+import static djf.settings.AppPropertyType.LOAD_ERROR_TITLE;
 import static djf.settings.AppPropertyType.NEW_COMPLETED_MESSAGE;
 import static djf.settings.AppPropertyType.NEW_COMPLETED_TITLE;
 import djf.ui.AppMessageDialogSingleton;
@@ -150,6 +152,46 @@ public class WelcomeController {
         //initFileToolbarStyle();
         appPane.setTop(app.getGUI().getTopToolbarPane());
         //app.buildAppComponentsHook();
+    }
+    public void handleLoadRecent(String name){
+        // WE'LL NEED TO GET CUSTOMIZED STUFF WITH THIS
+        CodeCheckWorkspace work1 = (CodeCheckWorkspace) app.getWorkspaceComponent();
+        WelcomeWorkspace work = work1.welcwork;
+	PropertiesManager props = PropertiesManager.getPropertiesManager();
+        VBox leftBox = work.leftBox;
+        VBox rightBox = work.rightBox;
+        BorderPane headPane = work.headPane;
+        File selectedFile = new File(app.getGUI().getP() + name + "File");
+        System.out.print(selectedFile.toPath());
+        // ONLY OPEN A NEW FILE IF THE USER SAYS OK
+        if (selectedFile != null) {
+            try {
+                // RESET THE WORKSPACE
+		app.getWorkspaceComponent().resetWorkspace();
+
+                // RESET THE DATA
+                app.getDataComponent().resetData();
+                
+                // LOAD THE FILE INTO THE DATA
+                
+                BorderPane appPane = app.getGUI().getAppPane();
+		// MAKE SURE THE WORKSPACE IS ACTIVATED
+		app.getWorkspaceComponent().activateWorkspace(app.getGUI().getAppPane());
+
+                app.getFileComponent().loadData(app.getDataComponent(), selectedFile.getAbsolutePath());
+                appPane.getChildren().remove(headPane);
+                appPane.getChildren().remove(leftBox);
+                appPane.getChildren().remove(rightBox);
+        
+                appPane.setTop(app.getGUI().getTopToolbarPane());
+                // AND MAKE SURE THE FILE BUTTONS ARE PROPERLY ENABLED
+                //saved = true;
+                //app.getGUI().updateToolbarControls(saved);
+            } catch (Exception e) {
+                AppMessageDialogSingleton dialog = AppMessageDialogSingleton.getSingleton();
+                dialog.show(props.getProperty(LOAD_ERROR_TITLE), props.getProperty(LOAD_ERROR_MESSAGE));
+            }
+        }
     }
 }
 

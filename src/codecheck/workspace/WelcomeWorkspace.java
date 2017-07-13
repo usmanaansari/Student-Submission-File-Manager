@@ -130,42 +130,42 @@ public class WelcomeWorkspace {
     ArrayList<String> files = folders(data.getWorkPath());
     System.out.print(files);
     File file = new File(data.getWorkPath());
-        switch (file.listFiles().length) {
-            case 0:
+    int yo = file.listFiles().length;
+            if (yo == 0){
                 System.out.print("Folder empty");
-                break;
-            case 3:
+            }
+            else if(yo == 3){
                 rec5.setText(files.get(0));
-                //rec2.setText(files.get(1));
-                //rec3.setText(files.get(2));
-                //rec4.setText(files.get(3));
-                //rec5.setText(files.get(4));
-                break;
-            case 6:
-                rec4.setText(files.get(0));
+            }
+            else if(yo == 6){
                 rec5.setText(files.get(1));
-                break;
-            case 9:
-                rec5.setText(files.get(0));
+                rec4.setText(files.get(0));
+            }
+            else if(yo == 9){
+                rec5.setText(files.get(2));
                 rec4.setText(files.get(1));
+                rec3.setText(files.get(0));
+            }
+            else if(yo==12){
+                rec5.setText(files.get(3));
+                rec4.setText(files.get(2));
+                rec3.setText(files.get(1));
+                rec2.setText(files.get(0));
+            }
+            else if(yo==15){
+                rec5.setText(files.get(4));
+                rec4.setText(files.get(3));
                 rec3.setText(files.get(2));
-                break;
-            case 12:
-                rec5.setText(files.get(0));
-                rec4.setText(files.get(1));
-                rec3.setText(files.get(2));
-                rec2.setText(files.get(3));
-                break;
-            case 15:
-                rec5.setText(files.get(0));
-                rec4.setText(files.get(1));
-                rec3.setText(files.get(2));
-                rec2.setText(files.get(3));
-                rec1.setText(files.get(4));
-                break;
-            default:
-                break;
-        }
+                rec2.setText(files.get(1));
+                rec1.setText(files.get(0));
+            }
+            else if( yo > 15){
+                rec5.setText(files.get((yo/3)-1));
+                rec4.setText(files.get((yo/3)-2));
+                rec3.setText(files.get((yo/3)-3));
+                rec2.setText(files.get((yo/3)-4));
+                rec1.setText(files.get((yo/3)-5));
+            }
     rightBox.getChildren().addAll(ccImage, newWorkBox);
     leftBox.getChildren().addAll(recentWork, rec5, rec4, rec3, rec2, rec1);
     //MainBox.getItems().addAll(leftBox,rightBox);
@@ -188,6 +188,26 @@ public class WelcomeWorkspace {
         xButton.setOnAction(e-> {
             controller.handleX();
     });
+        rec5.setOnAction(e -> {
+            String name = rec5.getText();
+            controller.handleLoadRecent(name);
+        });
+        rec4.setOnAction(e -> {
+            String name = rec4.getText();
+            controller.handleLoadRecent(name);
+        });
+        rec3.setOnAction(e -> {
+            String name = rec3.getText();
+            controller.handleLoadRecent(name);
+        });
+        rec2.setOnAction(e -> {
+            String name = rec2.getText();
+            controller.handleLoadRecent(name);
+        });
+        rec1.setOnAction(e -> {
+            String name = rec1.getText();
+            controller.handleLoadRecent(name);
+        });
     }
     private void initStyle(){
     newCodeCheck.getStyleClass().add(CLASS_NEWCC_LABEL);
