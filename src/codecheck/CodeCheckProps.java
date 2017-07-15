@@ -91,6 +91,8 @@ public enum CodeCheckProps {
     RENAME_TITLE,
     RENAME_MESSAGE,
     
+    STEP1_VIEWT,
+    STEP1_VIEWM,
     ABOUT_TITLE,
     ABOUT_MESSAGE,
     // FOR OTHER INTERACTIONS

@@ -131,6 +131,7 @@ public class WelcomeWorkspace {
     //System.out.print(files);
     File file = new File(data.getWorkPath());
     int yo = file.listFiles().length;
+    if(file.isDirectory()){
             if (yo == 0){
                 System.out.print("Folder empty");
             }
@@ -166,6 +167,7 @@ public class WelcomeWorkspace {
                 rec2.setText(files.get((yo/3)-4));
                 rec1.setText(files.get((yo/3)-5));
             }
+    }
     rightBox.getChildren().addAll(ccImage, newWorkBox);
     leftBox.getChildren().addAll(recentWork, rec5, rec4, rec3, rec2, rec1);
     //MainBox.getItems().addAll(leftBox,rightBox);

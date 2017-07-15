@@ -25,6 +25,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.TextInputDialog;
@@ -157,14 +159,15 @@ public class WelcomeController {
     }
     public void handleLoadRecent(String name){
      
-        CodeCheckWorkspace work1 = (CodeCheckWorkspace) app.getWorkspaceComponent();
-        WelcomeWorkspace work = work1.welcwork;
+        CodeCheckWorkspace work = (CodeCheckWorkspace) app.getWorkspaceComponent();
+        Step1Workspace work1 = work.work1;
+        WelcomeWorkspace wwork = work.welcwork;
 	PropertiesManager props = PropertiesManager.getPropertiesManager();
-        VBox leftBox = work.leftBox;
-        VBox rightBox = work.rightBox;
-        BorderPane headPane = work.headPane;
-        File selectedFile = new File(app.getGUI().getP() + name + "File");
-        System.out.print(selectedFile.toPath());
+        VBox leftBox = wwork.leftBox;
+        VBox rightBox = wwork.rightBox;
+        BorderPane headPane = wwork.headPane;
+        File selectedFile = new File(app.getGUI().getP() + name);
+        //System.out.print(selectedFile.toPath());
         // ONLY OPEN A NEW FILE IF THE USER SAYS OK
         if (selectedFile != null) {
             try {
@@ -180,7 +183,22 @@ public class WelcomeController {
 		// MAKE SURE THE WORKSPACE IS ACTIVATED
 		app.getWorkspaceComponent().activateWorkspace(app.getGUI().getAppPane());
 
-                app.getFileComponent().loadData(app.getDataComponent(), selectedFile.getAbsolutePath());
+                //app.getFileComponent().loadData(app.getDataComponent(), selectedFile.getAbsolutePath());
+                String title = selectedFile.getName();
+                app.getGUI().getWindow().setTitle("Code Check - " + title);
+                File[] files = selectedFile.listFiles();
+                ObservableList<String> bbs = FXCollections.observableArrayList();
+                for(File f :files){
+                    if(f.getName().equals("blackboard")){
+                        File bbFile = new File(selectedFile.getAbsolutePath() + "\\blackboard\\");
+                        for(File b : bbFile.listFiles()){             
+                            bbs.add(b.getName());
+                        }
+                       
+                    }
+                }
+                
+                work1.getBBSubs().setItems(bbs);
                 appPane.getChildren().remove(headPane);
                 appPane.getChildren().remove(leftBox);
                 appPane.getChildren().remove(rightBox);

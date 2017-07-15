@@ -24,6 +24,7 @@ import static djf.settings.AppStartupConstants.PATH_WORK;
 import static djf.ui.AppGUI.CLASS_FILE_BUTTON;
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -42,6 +43,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import net.lingala.zip4j.exception.ZipException;
 import properties_manager.PropertiesManager;
 
 /**
@@ -110,8 +112,8 @@ public class Step1Workspace {
     LeftBox = new VBox();
     RightBox = new VBox();
     extProg = new ProgressBar();
-    progInd = new ProgressIndicator(.47);
-    extProg.setProgress(progInd.getProgress());
+    progInd = new ProgressIndicator();
+    //extProg.setProgress(progInd.getProgress());
     ProgPercentLabel = new Label(props.getProperty(PROGP_LABEL));
     extProg.setMinSize(450, 15);
     extProg.setPadding(new Insets(25, 0, 0, 0));
@@ -156,7 +158,32 @@ public class Step1Workspace {
                 Logger.getLogger(Step1Workspace.class.getName()).log(Level.SEVERE, null, ex);
             }
         });
-        
+        BBSubs.getSelectionModel().selectedItemProperty().addListener(e->
+        {
+                controller.handleSelect();
+        });
+        Remove.setOnAction(e -> {
+            try {
+                controller.handleRemove();
+            } catch (IOException ex) {
+                Logger.getLogger(Step1Workspace.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        });
+        View.setOnAction(e->{
+            try {
+                controller.handleView();
+            } catch (ZipException ex) {
+                Logger.getLogger(Step1Workspace.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        });
+        Extract.setOnAction(e ->{ 
+            try {
+                controller.handleExtract();
+            } catch (ZipException ex) {
+                Logger.getLogger(Step1Workspace.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        });
+                
     }
     private void initStyle(){
         Refresh.getStyleClass().add(CLASS_BUTTONBOX_BUTTONS);
