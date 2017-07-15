@@ -128,7 +128,7 @@ public class WelcomeWorkspace {
     rec5 = new Hyperlink();
     //app.getGUI().getAppPane().setTop(headPane);
     ArrayList<String> files = folders(data.getWorkPath());
-    System.out.print(files);
+    //System.out.print(files);
     File file = new File(data.getWorkPath());
     int yo = file.listFiles().length;
             if (yo == 0){

@@ -18,6 +18,7 @@ import static djf.settings.AppPropertyType.LOAD_ERROR_MESSAGE;
 import static djf.settings.AppPropertyType.LOAD_ERROR_TITLE;
 import static djf.settings.AppPropertyType.NEW_COMPLETED_MESSAGE;
 import static djf.settings.AppPropertyType.NEW_COMPLETED_TITLE;
+import static djf.settings.AppStartupConstants.PATH_WORK;
 import djf.ui.AppMessageDialogSingleton;
 import java.io.File;
 import java.io.IOException;
@@ -71,7 +72,7 @@ public class WelcomeController {
             if(result1.isPresent()){
                 String title = result1.get();
                 
-                String path= "C:\\Users\\Usman\\Desktop\\219\\CodeCheckProj\\CodeCheck\\work\\" + title;
+                String path= PATH_WORK + title;
                 
                 CodeCheck codeC = new CodeCheck(title, path);
                 File CC = new File(codeC.getPath());
@@ -92,7 +93,7 @@ public class WelcomeController {
                           System.out.println(f.getPath() + " not made");
                         }
                     }
-                    //app.getGUI().getPrimaryStage().setTitle("Code Check - "+ title);
+                    
                     
                     data.setTitle(title);
                 
@@ -111,7 +112,9 @@ public class WelcomeController {
 
                     // MAKE SURE THE WORKSPACE IS ACTIVATED
                     app.getWorkspaceComponent().activateWorkspace(app.getGUI().getAppPane());
+                    
                     app.getFileComponent().saveData(data, path+"File");
+                    
                     appPane.getChildren().remove(headPane);
                     appPane.getChildren().remove(leftBox);
                     appPane.getChildren().remove(rightBox);
@@ -148,13 +151,12 @@ public class WelcomeController {
         appPane.getChildren().remove(headPane);
         appPane.getChildren().remove(leftBox);
         appPane.getChildren().remove(rightBox);
-        //initTopToolbar(app);
-        //initFileToolbarStyle();
+
         appPane.setTop(app.getGUI().getTopToolbarPane());
-        //app.buildAppComponentsHook();
+
     }
     public void handleLoadRecent(String name){
-        // WE'LL NEED TO GET CUSTOMIZED STUFF WITH THIS
+     
         CodeCheckWorkspace work1 = (CodeCheckWorkspace) app.getWorkspaceComponent();
         WelcomeWorkspace work = work1.welcwork;
 	PropertiesManager props = PropertiesManager.getPropertiesManager();
@@ -184,9 +186,7 @@ public class WelcomeController {
                 appPane.getChildren().remove(rightBox);
         
                 appPane.setTop(app.getGUI().getTopToolbarPane());
-                // AND MAKE SURE THE FILE BUTTONS ARE PROPERLY ENABLED
-                //saved = true;
-                //app.getGUI().updateToolbarControls(saved);
+                
             } catch (Exception e) {
                 AppMessageDialogSingleton dialog = AppMessageDialogSingleton.getSingleton();
                 dialog.show(props.getProperty(LOAD_ERROR_TITLE), props.getProperty(LOAD_ERROR_MESSAGE));

@@ -15,13 +15,17 @@
         <property name="APP_PATH_WORK"      value="work/"></property>
         
         <!-- PROGRAM ICON FILES -->
-        <property name="NEW_ICON"	    value="New"></property>
-        <property name="LOAD_ICON"	    value="Load"></property>
+        <property name="NEW_ICON"	    value="New.png"></property>
+        <property name="LOAD_ICON"	    value="Load.png"></property>
         <property name="SAVE_ICON"	    value="Save.png"></property>
         <property name="SAVE_AS_ICON"       value="SaveAs.png"></property>
         <property name="EXIT_ICON"          value="Exit.png"></property> 
         <property name="UP_ICON"            value="Up.png"></property>
         <property name="DOWN_ICON"          value="Down.png"></property>
+        
+        <property name="ABOUT_PIC"          value="About.png"></property>
+        <property name="RENAME_PIC"         value="Rename.png"></property>
+        
         <property name="NEXT_BUTTON"        value="Next"></property>
         <property name="PREV_BUTTON"        value="Previous"></property>
         <property name="HOME_BUTTON"        value="Home"></property>
@@ -57,13 +61,24 @@
         <property name="PROG5_LABEL"        value="Check Progress:"></property>
         <property name="RECENT_WORK_LABEL"  value="Recent Work:"></property>
         <property name="WELC_LABEL"         value="Welcome to Code Check"></property>
-        <property name="CREATE_NEW_LABEL"   value="Create new Code Check"></property>
+        <property name="CREATE_NEW_LABEL"   value="Create New Code Check"></property>
         <property name="XBUTTON"            value="X"></property>
+        <property name="ABOUT_TITLE"        value="About the Code Check Application"></property>
+        <property name="ABOUT_MESSAGE"      value="Software: Code Check App, Author: Usman Ansari, Year Made: 2017">
+        </property>
+        <property name="STEP1_TABLE"        value="Blackboard Submissions"></property>
+        <property name="STEP2_TABLE"        value="Student Submissions"></property>    
+        <property name="STEP3_TABLE"        value="Student ZIP Files"></property>
+        <property name="STEP4_TABLE"        value="Student Work Directories"></property>
+        <property name="STEP5_TABLE"        value="Student Work"></property>
+    
+                                                   
+        <property name="PROGP_LABEL"        value="47%"></property>                                         
         <!-- TOOLTIPS FOR BUTTONS -->
         <property name="NEW_TOOLTIP"		value="Create a New Slideshow"></property>
         <property name="LOAD_TOOLTIP"		value="Load an existing Slideshow"></property>
         <property name="ABOUT_TOOLTIP"		value="View Application Info"></property>
-        <property name="RENAME_TOOLTIP"		value="REname the Application"></property>
+        <property name="RENAME_TOOLTIP"		value="Rename the Application"></property>
         
         <property name="NEW_CONFIRMATION"          value="Create New CodeCheck"></property>
         <property name="NEW_CONF_CONTENT"        value="Are you sure you want to create a new Code Check?"></property>
@@ -105,6 +120,8 @@
         <property name="DUP_CODECHECK_MESSAGE"          value="The title provided is already used"></property>
         <property name="RENAME_TITLE"                   value="Rename Code Check Title"></property>
         <property name="RENAME_MESSAGE"                 value="Please enter a new name for the Code Check"></property>
+        <property name="CLOSE_CONFIRMATION"             value="Close Application Confirmation"></property>
+        <property name="CLOSE_MESSAGE"                  value="Are you sure you want to close the app?"></property>
         <!-- WORKSPACE ERROR MESSAGES -->
         <property name="INVALID_IMAGE_PATH_TITLE"       value="Invalid Image Path"></property>
         <property name="INVALID_IMAGE_PATH_MESSAGE"     value="Image not found"></property>

@@ -9,8 +9,11 @@ import codecheck.CodeCheckApp;
 import codecheck.data.CodeCheck;
 import codecheck.data.CodeCheckData;
 import codecheck.workspace.CodeCheckWorkspace;
+import codecheck.workspace.Step1Workspace;
 import djf.components.AppDataComponent;
 import djf.components.AppFileComponent;
+import static djf.settings.AppStartupConstants.PATH_WORK;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -18,10 +21,11 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.scene.control.ListView;
 import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonArrayBuilder;
@@ -40,11 +44,17 @@ import javax.json.stream.JsonGenerator;
 public class CodeCheckFiles implements AppFileComponent {
     CodeCheckApp app;
     CodeCheckWorkspace work;
-    static final String JSON_CODECHECK_TITLE = "title";
-    
+    CodeCheckData Data;
+    static final String JSON_CODECHECK_TITLE = "code check";
+    static final String JSON_BLACKBOARD_DIR = "blackboard";
+    static final String JSON_STUDENTSUB_DIR = "student subs";
+    static String JSON_YO = "";
+    codecheck.workspace.Step1Workspace work1;
     public CodeCheckFiles(CodeCheckApp initApp){
         app = initApp;
         work = (CodeCheckWorkspace) app.getWorkspaceComponent();
+        Data = (CodeCheckData) app.getDataComponent();
+        work1 = new Step1Workspace(app);
     }
 
     @Override
@@ -54,17 +64,31 @@ public class CodeCheckFiles implements AppFileComponent {
        JsonArrayBuilder ccArrayBuilder = Json.createArrayBuilder();
        JsonObjectBuilder ccTitleBuilder = Json.createObjectBuilder();
        ObservableList<CodeCheck> codechecks = dataManager.getCodeChecks();
-       
+      // dataManager.setBlackboardSubs();
+       //ObservableList<String> yo = dataManager.getBlackBoardSubs();
+       //System.out.print(yo + "hah");
+       //ObservableList<String> yo = dataManager.getBlackBoardSubs(dataManager.getTitle());
+       //System.out.print("hahah  " + yo );
        //for(CodeCheck codecheck : codechecks){
            JsonObject codecheckJson = (JsonObject) Json.createObjectBuilder()
                    .add(JSON_CODECHECK_TITLE, dataManager.getTitle()).build();
            
        //}
-       JsonArray codecheckArray = ccArrayBuilder.build();
-       JsonObject codecheckTitle = ccTitleBuilder.build();
+       ObservableList<String> codes = dataManager.getCodeCheckNames();
+            JsonArray codeJson = Json.createArrayBuilder()
+           .add(JSON_BLACKBOARD_DIR)
+           .add(JSON_STUDENTSUB_DIR).build();
+           ccArrayBuilder.add(codeJson);
        
+              
+       JsonArray ccArray = ccArrayBuilder.build();
+       
+       JSON_YO = dataManager.getTitle();
        JsonObject dataManagerJSO = Json.createObjectBuilder()
-               .add(JSON_CODECHECK_TITLE, dataManager.getTitle()).build();
+               .add(JSON_CODECHECK_TITLE, dataManager.getTitle())
+               .add(JSON_YO, ccArray).build();
+       
+       
        
          Map<String, Object> properties = new HashMap<>(1);
 	properties.put(JsonGenerator.PRETTY_PRINTING, true);
@@ -100,7 +124,10 @@ public class CodeCheckFiles implements AppFileComponent {
         //String codecheckTitle = dataManager.getTitle();
         
         
-        
+//        ObservableList<String> bbs = FXCollections.observableArrayList();
+//        File file = new File(PATH_WORK + "\\s\\" + "\\blackboard\\");
+//        bbs = dataManager.getBBS(file);
+//        work1.setBBSubs(bbs);
         String codecheckTitle = dataManager.getTitle();
         dataManager.setTitle(ccTitle);
         app.getGUI().getPrimaryStage().setTitle("Code Check - " + ccTitle);

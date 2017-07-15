@@ -31,17 +31,21 @@ import djf.ui.AppMessageDialogSingleton;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.ListView;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import properties_manager.PropertiesManager;
 //import org.apache.commons.io.FileUtils;
@@ -82,7 +86,7 @@ public class CodeCheckController {
             if(result1.isPresent()){
                 String title = result1.get();
                 
-                String path= "C:\\Users\\Usman\\Desktop\\219\\CodeCheckProj\\CodeCheck\\work\\" + title;
+                String path= PATH_WORK + title;
                 
                 CodeCheck codeC = new CodeCheck(title, path);
                 File CC = new File(codeC.getPath());
@@ -126,6 +130,7 @@ public class CodeCheckController {
                     app.getWorkspaceComponent().activateWorkspace(app.getGUI().getAppPane());
                     
                     app.getFileComponent().saveData(data, path+"File");
+                    
                     //app.getWorkspaceComponent().getWorkspace().
                     // REFRESH THE GUI, WHICH WILL ENABLE AND DISABLE
                     // THE APPROPRIATE CONTROLS
@@ -259,6 +264,65 @@ public class CodeCheckController {
         }
     }
         
+    public void handleLoad1(){
+        boolean continueToOpen = true;
+        
+        // THE USER CAN OPT OUT HERE WITH A CANCEL
+        //continueToOpen = promptToSave();
+        // IF THE USER REALLY WANTS TO OPEN A Course
+        if (continueToOpen) {
+            // GO AHEAD AND PROCEED LOADING A Course
+            promptToOpen1();
+            
+        }
+    }
+    public void promptToOpen1() {
+	// WE'LL NEED TO GET CUSTOMIZED STUFF WITH THIS
+	PropertiesManager props = PropertiesManager.getPropertiesManager();
+	CodeCheckData data = (CodeCheckData) app.getDataComponent();
+        //Step1Workspace work1 = new Step1Workspace(app);
+        CodeCheckWorkspace work = (CodeCheckWorkspace) app.getWorkspaceComponent();
+        Step1Workspace work1 = work.work1;
+        // AND NOW ASK THE USER FOR THE FILE TO OPEN
+        DirectoryChooser fc = new DirectoryChooser();
+        fc.setInitialDirectory(new File(PATH_WORK));
+	fc.setTitle(props.getProperty(LOAD_WORK_TITLE));
+        File selectedFile = fc.showDialog(app.getGUI().getWindow());
+        // ONLY OPEN A NEW FILE IF THE USER SAYS OK
+        if (selectedFile != null) {
+            try {
+                // RESET THE WORKSPACE
+		app.getWorkspaceComponent().resetWorkspace();
+
+                // RESET THE DATA
+                app.getDataComponent().resetData();
+                
+                app.getWorkspaceComponent().activateWorkspace(app.getGUI().getAppPane());
+                // LOAD THE FILE INTO THE DATA
+                //app.getFileComponent().loadData(app.getDataComponent(), selectedFile.getAbsolutePath());
+                String title = selectedFile.getName();
+                app.getGUI().getWindow().setTitle("Code Check - " + title);
+                File[] files = selectedFile.listFiles();
+                ObservableList<String> bbs = FXCollections.observableArrayList();
+                for(File f :files){
+                    if(f.getName().equals("blackboard")){
+                        File bbFile = new File(selectedFile.getAbsolutePath() + "\\blackboard\\");
+                        for(File b : bbFile.listFiles()){             
+                            bbs.add(b.getName());
+                        }
+                       
+                    }
+                }
+                work1.getBBSubs().setItems(bbs);
+              
+                
+            } catch (Exception e) {
+                AppMessageDialogSingleton dialog = AppMessageDialogSingleton.getSingleton();
+                dialog.show(props.getProperty(LOAD_ERROR_TITLE), props.getProperty(LOAD_ERROR_MESSAGE));
+            }
+        }
+    }
+    
 }
     
 

@@ -309,7 +309,7 @@ public class CodeCheckWorkspace extends AppWorkspaceComponent {
             controller.handleAbout();
         });
         loadButton.setOnAction(e -> {
-            controller.handleLoad();
+            controller.handleLoad1();
         });
     }
     
@@ -343,6 +343,7 @@ public class CodeCheckWorkspace extends AppWorkspaceComponent {
     public Stage getWelcome(){
         return welcome;
     }
+    
     public Button initChildButton(Pane toolbar, String icon, String tooltip, boolean disabled) {
         PropertiesManager props = PropertiesManager.getPropertiesManager();
 	

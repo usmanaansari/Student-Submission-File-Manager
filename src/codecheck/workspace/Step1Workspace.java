@@ -20,9 +20,14 @@ import static codecheck.style.CodeCheckStyle.CLASS_BOX;
 import static codecheck.style.CodeCheckStyle.CLASS_BUTTONBOX;
 import static codecheck.style.CodeCheckStyle.CLASS_BUTTONBOX_BUTTONS;
 import static codecheck.style.CodeCheckStyle.CLASS_PROMPT_LABEL;
+import static djf.settings.AppStartupConstants.PATH_WORK;
 import static djf.ui.AppGUI.CLASS_FILE_BUTTON;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -45,7 +50,7 @@ import properties_manager.PropertiesManager;
  */
 public class Step1Workspace {
    CodeCheckApp app;
-   //Step1Controller controller;
+   Step1Controller controller;
    CodeCheckData data;
    
    
@@ -67,14 +72,14 @@ public class Step1Workspace {
    ProgressBar extProg;
    ProgressIndicator progInd;
    Label tableLabel;
-   
+   //ObservableList<String> blacks;
    File workFile;
    
    ObservableList<String> names;
    ObservableList<String> bbs;
    public Step1Workspace(CodeCheckApp initApp){
        app = initApp;
-       
+       controller = new Step1Controller(app);
        
        initLayout();
        
@@ -114,20 +119,17 @@ public class Step1Workspace {
     
     
     bbs = FXCollections.observableArrayList();
-        for(File file : data.getWorkFile().listFiles()){
-            if(file.isDirectory()){
-            File bbFile = new File(file.getPath() + "\\blackboard\\");
-            //System.out.println(bbFile.getPath());
-            if(bbFile.isDirectory()){
-            for(File file1 : bbFile.listFiles()){
-                bbs.add(file1.getName());
-            }
-            }
-            }
-        }
-    System.out.print(bbs.toString());
+    
+    
+    //File newa = new File(PATH_WORK + "\\blackboard\\");
+    //bbs.setAll(data.getBBS(newa));//
+    //System.out.print(bbs.toString());
     //System.out.println(data.getCodeChecks().toString());
-    BBSubs.setItems(bbs);
+    //BBSubs.setItems(bbs);
+    //bbs = data.getBlacks();
+    //BBSubs.setItems(data.getBlacks());
+    //bbs = data.getBlacks();
+    //BBSubs.setItems(data.getBlacks());
     
     View.prefWidthProperty().bind(buttons.widthProperty().multiply(.2));
     Remove.prefWidthProperty().bind(buttons.widthProperty().multiply(.2));
@@ -147,7 +149,14 @@ public class Step1Workspace {
     MainBox.setSpacing(50);
     }
     private void initControllers(){
-        //controller = new Step1Controller(app);
+        Refresh.setOnAction(e -> {
+            try {
+                controller.handleRefresh();
+            } catch (IOException ex) {
+                Logger.getLogger(Step1Workspace.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        });
+        
     }
     private void initStyle(){
         Refresh.getStyleClass().add(CLASS_BUTTONBOX_BUTTONS);
@@ -165,6 +174,9 @@ public class Step1Workspace {
     }
     public HBox getStep1(){
         return MainBox;
+    }
+    public ListView getBBSubs(){
+        return BBSubs;
     }
 }
 
