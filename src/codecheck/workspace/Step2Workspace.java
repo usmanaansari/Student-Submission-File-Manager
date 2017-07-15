@@ -26,6 +26,9 @@ import static codecheck.style.CodeCheckStyle.CLASS_BUTTONBOX;
 import static codecheck.style.CodeCheckStyle.CLASS_BUTTONBOX_BUTTONS;
 import static codecheck.style.CodeCheckStyle.CLASS_PROMPT_LABEL;
 import static djf.ui.AppGUI.CLASS_FILE_BUTTON;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -35,6 +38,7 @@ import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import net.lingala.zip4j.exception.ZipException;
 import properties_manager.PropertiesManager;
 
 /**
@@ -45,7 +49,7 @@ public class Step2Workspace {
    CodeCheckApp app;
    //Step1Controller controller;
    CodeCheckData data;
-   
+   Step2Controller controller;
    
    Label Step2Label;
    Label Step2Desc;
@@ -71,7 +75,7 @@ public class Step2Workspace {
    
    public Step2Workspace(CodeCheckApp initApp){
        app = initApp;
-       
+       controller = new Step2Controller(app);
        
        initLayout();
        
@@ -122,7 +126,34 @@ public class Step2Workspace {
     MainBox.setSpacing(50);
     }
     private void initControllers(){
-       // controller = new Step1Controller(app);
+       Refresh.setOnAction(e -> {
+            try {
+                controller.handleRefresh();
+            } catch (IOException ex) {
+                Logger.getLogger(Step1Workspace.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        });
+        SSubs.getSelectionModel().selectedItemProperty().addListener(e->
+        {
+                controller.handleSelect();
+        });
+        Remove.setOnAction(e -> {
+            try {
+                controller.handleRemove();
+            } catch (IOException ex) {
+                Logger.getLogger(Step1Workspace.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        });
+        View.setOnAction(e->{
+            try {
+                controller.handleView();
+            } catch (ZipException ex) {
+                Logger.getLogger(Step1Workspace.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        });
+        Rename.setOnAction(e->{
+            controller.handleRename();
+        });
     }
     private void initStyle(){
         Refresh.getStyleClass().add(CLASS_BUTTONBOX_BUTTONS);
@@ -140,5 +171,8 @@ public class Step2Workspace {
     }
     public HBox getStep2(){
         return MainBox;
+    }
+    public ListView getSSubs(){
+        return SSubs;
     }
 }

@@ -45,21 +45,21 @@ public class Step1Controller {
         CodeCheckWorkspace work = (CodeCheckWorkspace) app.getWorkspaceComponent();
         Step1Workspace work1 = work.work1;
         File theFile = new File(PATH_WORK + (app.getGUI().getWindow().getTitle().substring(13)));
-        if( theFile.isDirectory()){
+        if (theFile.isDirectory()) {
             File[] files = theFile.listFiles();
-                ObservableList<String> bbs = FXCollections.observableArrayList();
-                for(File f :files){
-                    if(f.getName().equals("blackboard")){
-                        File bbFile = new File(theFile.getAbsolutePath() + "\\blackboard\\");
-                        for(File b : bbFile.listFiles()){             
-                            bbs.add(b.getName());
-                        }
-                       
+            ObservableList<String> bbs = FXCollections.observableArrayList();
+            for (File f : files) {
+                if (f.getName().equals("blackboard")) {
+                    File bbFile = new File(theFile.getAbsolutePath() + "\\blackboard\\");
+                    for (File b : bbFile.listFiles()) {
+                        bbs.add(b.getName());
                     }
+
                 }
-                work1.getBBSubs().setItems(bbs);
+            }
+            work1.getBBSubs().setItems(bbs);
         }
-        
+
     }
     
     public void handleSelect() {
@@ -69,16 +69,15 @@ public class Step1Controller {
         BBSubs.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         ObservableList<String> selectedItems = BBSubs.getSelectionModel().getSelectedItems();
         
-        if(selectedItems.size() > 1 ){
+        if (selectedItems.size() > 1) {
             work1.View.setDisable(true);
             work1.Remove.setDisable(true);
-            
+
+        } else {
+            work1.View.setDisable(false);
+            work1.Remove.setDisable(false);
         }
-        else{
-        work1.View.setDisable(false);
-        work1.Remove.setDisable(false);
-        }
-        
+
     }
     
     public void handleRemove() throws IOException {
@@ -86,16 +85,16 @@ public class Step1Controller {
         Step1Workspace work1 = work.work1;
         ListView BBSubs = work1.BBSubs;
         BBSubs.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-        
+
         String selectedItem = (String) BBSubs.getSelectionModel().getSelectedItem();
         String path = PATH_WORK + app.getGUI().getWindow().getTitle().substring(13) + "\\blackboard\\";
         //ystem.out.print(path);
         //File file = new File(path);
-        
-            File f = new File(path+selectedItem);
-            //System.out.println(selectedItem);
-            f.delete();
-            handleRefresh();
+
+        File f = new File(path + selectedItem.substring(16));
+        //System.out.println(selectedItem);
+        f.delete();
+        handleRefresh();
         
     }
     public void handleView() throws ZipException{
@@ -114,22 +113,21 @@ public class Step1Controller {
         alert.setHeaderText("Here are the contents of " + selectedItem);
         TextArea text = new TextArea();
         
-        ZipFile z = new ZipFile(path+selectedItem);
+        ZipFile z = new ZipFile(path + selectedItem);
         List fileHeaderList = z.getFileHeaders();
-        TreeItem<String> root = new TreeItem<> (selectedItem);
+        TreeItem<String> root = new TreeItem<>(selectedItem);
         root.setExpanded(true);
-        for(int i = 0; i < fileHeaderList.size(); i++){
+        for (int i = 0; i < fileHeaderList.size(); i++) {
             FileHeader fileHeader = (FileHeader) fileHeaderList.get(i);
             TreeItem<String> item = new TreeItem<>(fileHeader.getFileName());
-           if(fileHeader.getFileName().contains(".txt")){
-               
-           }
-            else{
-            root.getChildren().add(item);
+            if (fileHeader.getFileName().contains(".txt")) {
+
+            } else {
+                root.getChildren().add(item);
             }
         }
-        TreeView<String> tree = new TreeView<> (root);
-        
+        TreeView<String> tree = new TreeView<>(root);
+
         alert.getDialogPane().setExpandableContent(tree);
         alert.showAndWait();
         
@@ -145,12 +143,14 @@ public class Step1Controller {
             ObservableList<String> selectedItem = BBSubs.getSelectionModel().getSelectedItems();
             String title = app.getGUI().getWindow().getTitle().substring(13);            
             for(String s: selectedItem){
-                System.out.println(PATH_WORK +  title +"\\blackboard\\" + s);
+                //System.out.println(PATH_WORK +  title +"\\blackboard\\" + s);
                 ZipFile z = new ZipFile(PATH_WORK +  title +"\\blackboard\\" + s);
-                z.extractAll(PATH_WORK + title + "\\submissions\\" + s);
-                ProgressMonitor y = z.getProgressMonitor();
-                progI.setProgress(y.getWorkCompleted());
-                prog.setProgress(progI.getProgress());
+                System.out.print(z.getFile().getName());
+                z.extractAll(PATH_WORK + title + "\\submissions\\" );
+                
+//                ProgressMonitor y = z.getProgressMonitor();
+//                progI.setProgress(y.getWorkCompleted());
+//                prog.setProgress(progI.getProgress());
                 
             }
   
