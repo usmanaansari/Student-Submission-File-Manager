@@ -323,7 +323,8 @@ public class CodeCheckController {
         }
         work1.getBBSubs().setItems(bbs);
     }
-    public void updateStep2Table(File selectedFile){
+
+    public void updateStep2Table(File selectedFile) {
         CodeCheckWorkspace work = (CodeCheckWorkspace) app.getWorkspaceComponent();
         Step2Workspace work2 = work.work2;
         String title = selectedFile.getName();
@@ -336,13 +337,7 @@ public class CodeCheckController {
                 File SbFile = new File(selectedFile.getAbsolutePath() + "\\submissions\\");
                 for (File s : SbFile.listFiles()) {
                     Sbs.add(s);
-                    if(s.getAbsolutePath().endsWith(".txt")){
-                        
-                    }
-                    else{
                     studs.add(s.getName());
-                    }
-                    
                 }
 
             }

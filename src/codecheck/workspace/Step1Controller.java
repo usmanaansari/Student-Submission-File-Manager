@@ -135,6 +135,7 @@ public class Step1Controller {
         public void handleExtract() throws ZipException{
             CodeCheckWorkspace work = (CodeCheckWorkspace) app.getWorkspaceComponent();
             Step1Workspace work1 = work.work1;
+            Step2Workspace work2 = work.work2;
             ListView BBSubs = work1.BBSubs;
             ProgressBar prog = work1.extProg;
             ProgressIndicator progI = work1.progInd;
@@ -147,6 +148,7 @@ public class Step1Controller {
                 ZipFile z = new ZipFile(PATH_WORK +  title +"\\blackboard\\" + s);
                 System.out.print(z.getFile().getName());
                 z.extractAll(PATH_WORK + title + "\\submissions\\" );
+                work2.Rename.setDisable(false);
                 
 //                ProgressMonitor y = z.getProgressMonitor();
 //                progI.setProgress(y.getWorkCompleted());

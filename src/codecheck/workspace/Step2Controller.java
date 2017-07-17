@@ -15,7 +15,9 @@ import java.io.File;
 import java.nio.file.DirectoryNotEmptyException;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -57,14 +59,8 @@ public class Step2Controller {
                 if (f.getName().equals("submissions")) {
                     File sbFile = new File(theFile.getAbsolutePath() + "\\submissions\\");
                     for (File s : sbFile.listFiles()) {
-                        if(s.getAbsolutePath().endsWith(".txt")){
-                            
-                        }
-                        else{
                         sbs.add(s.getName());
-                        }
                     }
-
                 }
             }
             work2.getSSubs().setItems(sbs);
@@ -116,34 +112,45 @@ public class Step2Controller {
 
         String selectedItem = (String) SSubs.getSelectionModel().getSelectedItem();
         String path = PATH_WORK + app.getGUI().getWindow().getTitle().substring(13) + "\\submissions\\";
+       
         File f = new File(path + selectedItem);
 
+        
+        if(selectedItem.endsWith(".txt")){
+        Alert nope = new Alert(Alert.AlertType.ERROR);
+        nope.setTitle(props.getProperty(STEP1_VIEWT));
+        nope.setHeaderText("Cannot View Contents of this File Type" + selectedItem );
+        nope.showAndWait();
+        }
+        else{
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(props.getProperty(STEP1_VIEWT));
         alert.setHeaderText("Here are the contents of " + selectedItem);
         TextArea text = new TextArea();
-
-        File directory = new File(path + selectedItem);
-        String[] names = directory.list();
+        ZipFile directory = new ZipFile(path + selectedItem);
+        List fileHeaderList = directory.getFileHeaders();
         TreeItem<String> root = new TreeItem<>(selectedItem);
         root.setExpanded(true);
-        for (int i = 0; i < names.length; i++) {
-            File file = new File(names[i]);
-            TreeItem<String> item = new TreeItem<>(file.getName());
-            if (file.getName().contains(".txt")) {
+        for (int i = 0 ; i< fileHeaderList.size(); i++) {
+            FileHeader fileHeader = (FileHeader) fileHeaderList.get(i);
+            TreeItem<String> item = new TreeItem<>(fileHeader.getFileName());
+            if (fileHeader.getFileName().contains(".txt")) {
 
             } else {
                 root.getChildren().add(item);
             }
         }
+        
         TreeView<String> tree = new TreeView<>(root);
-
+        
         alert.getDialogPane().setExpandableContent(tree);
         alert.showAndWait();
+        }
+       
 
     }
 
-    public void handleRename() throws ZipException {
+    public void handleRename1() throws ZipException {
         PropertiesManager props = PropertiesManager.getPropertiesManager();
         CodeCheckWorkspace work = (CodeCheckWorkspace) app.getWorkspaceComponent();
         Step2Workspace work2 = work.work2;
@@ -179,7 +186,82 @@ public class Step2Controller {
             }
         
     }
+    public void handleRename() throws IOException{
+        PropertiesManager props = PropertiesManager.getPropertiesManager();
+        CodeCheckWorkspace work = (CodeCheckWorkspace) app.getWorkspaceComponent();
+        Step2Workspace work2 = work.work2;
+        ListView SSubs = work2.SSubs;
+        SSubs.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 
+        ObservableList<String> tableData = SSubs.getItems();
+        ObservableList<String> netIDS = FXCollections.observableArrayList();
+        String subPath = PATH_WORK + app.getGUI().getWindow().getTitle().substring(13) + "\\submissions\\";
+        ArrayList<File> files = new ArrayList<>();
+        for(String s : tableData){
+            System.out.println(s);
+            if(s.endsWith(".zip")){
+                System.out.println(s);
+                if(s.contains("_")){
+                    System.out.println(s);
+                    String netID = s.split("_")[1];
+                    netIDS.add(netID + ".zip");
+                }
+                else{
+                    netIDS.add(s);
+                }
+                
+                
+            }
+            else{
+                netIDS.add(s);
+            }
+            
+            //System.out.println(netID);
+            //File eachFile = new File(subPath+ netID + ".zip" );
+            //System.out.println(eachFile.getAbsolutePath());
+            //files.add(eachFile);
+            
+        }
+        //System.out.print(files.toString());
+        
+        SSubs.getItems().setAll(netIDS);
+        Collections.sort(SSubs.getItems());
+        File directory = new File(subPath);
+        //System.out.println(netIDS.toString());
+        //System.out.println(Arrays.toString(directory.list()));
+        for(File f : directory.listFiles()){
+            if(f.getAbsolutePath().endsWith(".txt")){
+                
+            }
+            else if(f.getAbsolutePath().endsWith(".zip")){
+                if(f.getName().contains("_")){
+                String name = f.getName().split("_")[1];
+                File newFile = new File(subPath + name + ".zip");
+                if(newFile.exists()){
+                    f.delete();
+                }
+                else{
+                f.renameTo(newFile);
+                }
+                }
+                
+                
+            }
+        }
+        
+        //System.out.println(directory.listFiles().toString());
+        File[] dir = directory.listFiles();
+        //System.out.print(directory.getAbsolutePath());
+        handleRefresh();
+        work2.Rename.setDisable(true);
+        
+    }
+    
+//    public ObservableList<String> getSubmissions(){
+//        
+//        
+//        return;
+//    }
 
     public static void delete(File file)
             throws IOException {
