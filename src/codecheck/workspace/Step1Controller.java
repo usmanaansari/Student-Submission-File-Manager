@@ -69,14 +69,14 @@ public class Step1Controller {
         BBSubs.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         ObservableList<String> selectedItems = BBSubs.getSelectionModel().getSelectedItems();
         
-        if (selectedItems.size() > 1) {
-            work1.View.setDisable(true);
-            work1.Remove.setDisable(true);
-
-        } else {
-            work1.View.setDisable(false);
-            work1.Remove.setDisable(false);
-        }
+//        if (selectedItems.size() > 1) {
+//            work1.View.setDisable(true);
+//            work1.Remove.setDisable(true);
+//
+//        } else {
+//            work1.View.setDisable(false);
+//            work1.Remove.setDisable(false);
+//        }
 
     }
     

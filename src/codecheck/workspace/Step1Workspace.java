@@ -31,18 +31,22 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TextArea;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.util.Callback;
 import net.lingala.zip4j.exception.ZipException;
 import properties_manager.PropertiesManager;
 
@@ -161,6 +165,48 @@ public class Step1Workspace {
         BBSubs.getSelectionModel().selectedItemProperty().addListener(e->
         {
                 controller.handleSelect();
+        });
+//        BBSubs.setCellFactory(new Callback<ListView<String>, ListCell<String>>() {  
+//            @Override
+//            public ListCell<String> call(ListView<String> param) {
+//               final ListCell<String> cell = new ListCell<>();
+//               cell.addEventFilter(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
+//                   @Override
+//                   public void handle(MouseEvent event) {
+//                       final int index = cell.getIndex();
+//                       if (index >= 0 && index < BBSubs.getItems().size() && BBSubs.getSelectionModel().isSelected(index)  ) {
+//                        BBSubs.getSelectionModel().clearSelection();
+//                        event.consume();  
+//                    }  
+//                   }
+//               });
+//               return cell;
+//            }
+//    });
+        BBSubs.setCellFactory(lv -> {
+            ListCell<String> cell = new ListCell<>();
+            cell.textProperty().bind(cell.itemProperty());
+            cell.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
+                BBSubs.requestFocus();
+                if (! cell.isEmpty()) {
+                    int index = cell.getIndex();
+                    if (BBSubs.getSelectionModel().getSelectedIndices().contains(index)) {
+                        BBSubs.getSelectionModel().clearSelection(index);
+                        BBSubs.getFocusModel().focus(-1);
+                        View.setDisable(false);
+                        Remove.setDisable(false);
+                    } else {
+                        BBSubs.getSelectionModel().select(index);
+                        if(BBSubs.getSelectionModel().getSelectedItems().size() > 1){
+                        View.setDisable(true);
+                        Remove.setDisable(true);
+                        }
+                        
+                    }
+                    event.consume();
+                }
+            });
+            return cell ;
         });
         Remove.setOnAction(e -> {
             try {
