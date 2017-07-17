@@ -198,11 +198,11 @@ public class Step2Controller {
         String subPath = PATH_WORK + app.getGUI().getWindow().getTitle().substring(13) + "\\submissions\\";
         ArrayList<File> files = new ArrayList<>();
         for(String s : tableData){
-            System.out.println(s);
+            //System.out.println(s);
             if(s.endsWith(".zip")){
-                System.out.println(s);
+                //System.out.println(s);
                 if(s.contains("_")){
-                    System.out.println(s);
+                    //System.out.println(s);
                     String netID = s.split("_")[1];
                     netIDS.add(netID + ".zip");
                 }

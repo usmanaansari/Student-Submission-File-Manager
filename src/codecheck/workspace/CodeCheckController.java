@@ -298,6 +298,7 @@ public class CodeCheckController {
                 //app.getFileComponent().loadData(app.getDataComponent(), selectedFile.getAbsolutePath());
                 updateStep1Table(selectedFile);
                 updateStep2Table(selectedFile);
+                updateStep3Table(selectedFile);
             } catch (Exception e) {
                 AppMessageDialogSingleton dialog = AppMessageDialogSingleton.getSingleton();
                 dialog.show(props.getProperty(LOAD_ERROR_TITLE), props.getProperty(LOAD_ERROR_MESSAGE));
@@ -343,6 +344,28 @@ public class CodeCheckController {
             }
         }
         work2.getSSubs().setItems(studs);
+    }
+    public void updateStep3Table(File selectedFile){
+        CodeCheckWorkspace work = (CodeCheckWorkspace) app.getWorkspaceComponent();
+        Step3Workspace work3 = work.work3;
+        String title = selectedFile.getName();
+        app.getGUI().getWindow().setTitle("Code Check - " + title);
+        File[] files = selectedFile.listFiles();
+        ObservableList<File> Sbs = FXCollections.observableArrayList();
+        ObservableList<String> studs = FXCollections.observableArrayList();
+        for (File f : files) {
+            if (f.getName().equals("submissions")) {
+                File SbFile = new File(selectedFile.getAbsolutePath() + "\\submissions\\");
+                for (File s : SbFile.listFiles()) {
+                    Sbs.add(s);
+                    if(s.getAbsolutePath().contains(".zip")){
+                    studs.add(s.getName());
+                    }
+                }
+
+            }
+        }
+        work3.getSZips().setItems(studs);
     }
 
 }

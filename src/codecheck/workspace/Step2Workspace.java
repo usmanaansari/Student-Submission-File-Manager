@@ -152,7 +152,11 @@ public class Step2Workspace {
             }
         });
         Rename.setOnAction(e->{
-            controller.handleRename();
+           try {
+               controller.handleRename();
+           } catch (IOException ex) {
+               Logger.getLogger(Step2Workspace.class.getName()).log(Level.SEVERE, null, ex);
+           }
         });
     }
     private void initStyle(){
