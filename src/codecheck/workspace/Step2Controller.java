@@ -253,7 +253,7 @@ public class Step2Controller {
         File[] dir = directory.listFiles();
         //System.out.print(directory.getAbsolutePath());
         handleRefresh();
-        work2.Rename.setDisable(true);
+        //work2.Rename.setDisable(true);
         
     }
     

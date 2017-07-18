@@ -27,10 +27,14 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -40,6 +44,7 @@ import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.ProgressIndicator;
+import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TextArea;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
@@ -47,7 +52,9 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.util.Callback;
+import net.lingala.zip4j.core.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
+import net.lingala.zip4j.progress.ProgressMonitor;
 import properties_manager.PropertiesManager;
 
 /**
@@ -80,9 +87,10 @@ public class Step1Workspace {
    Label tableLabel;
    //ObservableList<String> blacks;
    File workFile;
-   
+   ReentrantLock progressLock;
    ObservableList<String> names;
    ObservableList<String> bbs;
+    int numTasks = 0;
    public Step1Workspace(CodeCheckApp initApp){
        app = initApp;
        controller = new Step1Controller(app);
@@ -115,13 +123,13 @@ public class Step1Workspace {
     MainBox = new HBox();
     LeftBox = new VBox();
     RightBox = new VBox();
-    extProg = new ProgressBar();
+    extProg = new ProgressBar(0);
     progInd = new ProgressIndicator();
     //extProg.setProgress(progInd.getProgress());
     ProgPercentLabel = new Label(props.getProperty(PROGP_LABEL));
     extProg.setMinSize(450, 15);
     extProg.setPadding(new Insets(25, 0, 0, 0));
-    
+    progressLock = new ReentrantLock();
     
     
     bbs = FXCollections.observableArrayList();
@@ -222,12 +230,46 @@ public class Step1Workspace {
                 Logger.getLogger(Step1Workspace.class.getName()).log(Level.SEVERE, null, ex);
             }
         });
-        Extract.setOnAction(e ->{ 
-            try {
-                controller.handleExtract();
-            } catch (ZipException ex) {
-                Logger.getLogger(Step1Workspace.class.getName()).log(Level.SEVERE, null, ex);
+        Extract.setOnAction((ActionEvent e) ->{ 
+
+            BBSubs.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+            ObservableList<String> selectedItem = BBSubs.getSelectionModel().getSelectedItems();
+            
+            ArrayList<ZipFile> zips = new ArrayList<>();
+            String title = app.getGUI().getWindow().getTitle().substring(13);
+            for (int i = 0; i < selectedItem.size(); i++) {
+                try {
+                    ZipFile newZip = new ZipFile(PATH_WORK + title + "\\blackboard\\" + selectedItem.get(i));
+                    zips.add(newZip);
+                } catch (ZipException ex) {
+                    Logger.getLogger(Step1Workspace.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
+            Task<Void> task = new Task<Void>() {
+                @Override
+                protected Void call() throws Exception {
+
+                    
+                    for (int x = 0; x < zips.size(); x++) {
+
+                        File subFolder = new File(PATH_WORK + title + "\\submissions\\");
+                        zips.get(x).extractAll(subFolder.getAbsolutePath());
+                        File[] subs = subFolder.listFiles();
+
+                        for (int i = 0; i < subs.length; i++) {
+                            if (subs[i].isFile() && subs[i].getName().endsWith(".zip")) {
+
+                            }
+                        }
+                        updateProgress(x+1, zips.size());
+                        Thread.sleep(5);
+                    }
+                    return null;
+                }
+            };
+            Thread thread = new Thread(task);
+            extProg.progressProperty().bind(task.progressProperty());
+            thread.start();
         });
                 
     }

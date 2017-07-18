@@ -334,6 +334,9 @@ public class CodeCheckWorkspace extends AppWorkspaceComponent {
         prevButton.setDisable(true);
         renameButton.setDisable(false);
         appPane.setCenter(Step1);
+        work1.BBSubs.getItems().clear();
+        work2.SSubs.getItems().clear();
+        work3.SZips.getItems().clear();
     }
 
     @Override

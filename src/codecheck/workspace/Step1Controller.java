@@ -91,7 +91,7 @@ public class Step1Controller {
         //ystem.out.print(path);
         //File file = new File(path);
 
-        File f = new File(path + selectedItem.substring(16));
+        File f = new File(path + selectedItem);
         //System.out.println(selectedItem);
         f.delete();
         handleRefresh();
@@ -150,9 +150,9 @@ public class Step1Controller {
                 z.extractAll(PATH_WORK + title + "\\submissions\\" );
                 work2.Rename.setDisable(false);
                 
-//                ProgressMonitor y = z.getProgressMonitor();
-//                progI.setProgress(y.getWorkCompleted());
-//                prog.setProgress(progI.getProgress());
+                ProgressMonitor y = z.getProgressMonitor();
+                progI.setProgress(y.getWorkCompleted());
+                prog.setProgress(progI.getProgress());
                 
             }
   
