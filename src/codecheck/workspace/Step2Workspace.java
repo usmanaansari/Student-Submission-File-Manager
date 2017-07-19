@@ -25,10 +25,17 @@ import static codecheck.style.CodeCheckStyle.CLASS_BOX;
 import static codecheck.style.CodeCheckStyle.CLASS_BUTTONBOX;
 import static codecheck.style.CodeCheckStyle.CLASS_BUTTONBOX_BUTTONS;
 import static codecheck.style.CodeCheckStyle.CLASS_PROMPT_LABEL;
+import static djf.settings.AppStartupConstants.PATH_WORK;
 import static djf.ui.AppGUI.CLASS_FILE_BUTTON;
+import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -38,6 +45,7 @@ import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import net.lingala.zip4j.core.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
 import properties_manager.PropertiesManager;
 
@@ -102,9 +110,9 @@ public class Step2Workspace {
     MainBox = new HBox();
     LeftBox = new VBox();
     RightBox = new VBox();
-    extProg = new ProgressBar();
-    progInd = new ProgressIndicator(.47);
-    extProg.setProgress(progInd.getProgress());
+    extProg = new ProgressBar(0);
+    progInd = new ProgressIndicator();
+    //extProg.setProgress(progInd.getProgress());
     ProgPercentLabel = new Label(props.getProperty(PROGP_LABEL));
     extProg.setMinSize(450, 15);
     extProg.setPadding(new Insets(25, 0, 0, 0));
@@ -151,12 +159,103 @@ public class Step2Workspace {
                 Logger.getLogger(Step1Workspace.class.getName()).log(Level.SEVERE, null, ex);
             }
         });
-        Rename.setOnAction(e->{
-           try {
-               controller.handleRename();
-           } catch (IOException ex) {
-               Logger.getLogger(Step2Workspace.class.getName()).log(Level.SEVERE, null, ex);
-           }
+        Rename.setOnAction(e -> {
+//           try {
+//               controller.handleRename();
+//           } catch (IOException ex) {
+//               Logger.getLogger(Step2Workspace.class.getName()).log(Level.SEVERE, null, ex);
+//           }
+            ObservableList<String> tableData = SSubs.getItems();
+            ObservableList<String> netIDS = FXCollections.observableArrayList();
+            String subPath = PATH_WORK + app.getGUI().getWindow().getTitle().substring(13) + "\\submissions\\";
+            ArrayList<File> files = new ArrayList<>();
+            String title = app.getGUI().getWindow().getTitle().substring(13);
+            
+            Task<Void> task = new Task<Void>() {
+                @Override
+                protected Void call() throws Exception {
+                        for(int i = 0; i < tableData.size(); i++){
+                            String s = tableData.get(i);
+                            if (s.endsWith(".zip")) {
+                            if (s.contains("_")) {
+                                String netID = s.split("_")[1];
+                                netIDS.add(netID + ".zip");
+                            } else {
+                                netIDS.add(s);
+                            }
+
+                        } else {
+                            netIDS.add(s);
+                        }
+                        }
+
+                    
+                    File directory = new File(subPath);
+                    for( int j = 0; j < directory.listFiles().length; j++){
+                        File f = directory.listFiles()[j];
+                        if (f.getAbsolutePath().endsWith(".txt")) {
+
+                        } else if (f.getAbsolutePath().endsWith(".zip")) {
+                            if (f.getName().contains("_")) {
+                                String name = f.getName().split("_")[1];
+                                File newFile = new File(subPath + name + ".zip");
+                                if (newFile.exists()) {
+                                    f.delete();
+                                } else {
+                                    f.renameTo(newFile);
+                                }
+                            }
+
+                        }
+                        File[] dir = directory.listFiles();
+                        updateProgress(j+1, directory.listFiles().length);
+                        Thread.sleep(5);
+                    }
+                    //System.out.println(directory.listFiles().toString());
+                    
+
+                    return null;
+                }
+//                @Override
+//                protected Void call() throws Exception {
+//
+//                    for (int i = 0; i < selectedItem.size(); i++) {
+//                        ZipFile newZip = new ZipFile(PATH_WORK + title + "\\blackboard\\" + selectedItem.get(i));
+//                        zips.add(newZip);
+//                    }
+//                    
+//                    for (int x = 0; x < zips.size(); x++) {
+//
+//                        File subFolder = new File(PATH_WORK + title + "\\submissions\\");
+//                        zips.get(x).extractAll(subFolder.getAbsolutePath());
+//                        File[] subs = subFolder.listFiles();
+//
+//                        for (int i = 0; i < subs.length; i++) {
+//                            if (subs[i].isFile() && subs[i].getName().endsWith(".zip")) {
+//                                  
+//                            }
+//                        }
+//                        updateProgress(x+1, zips.size());
+//                        Thread.sleep(5);
+//                    }
+//                    return null;
+//                }
+                
+            };
+            SSubs.getItems().setAll(netIDS);
+            Collections.sort(SSubs.getItems());
+            Thread thread = new Thread(task);
+            extProg.progressProperty().bind(task.progressProperty());
+            thread.start();
+            
+            
+
+            try {
+                //System.out.print(directory.getAbsolutePath());
+                controller.handleRefresh();
+            } catch (IOException ex) {
+                Logger.getLogger(Step2Workspace.class.getName()).log(Level.SEVERE, null, ex);
+            }
         });
     }
     private void initStyle(){

@@ -130,7 +130,7 @@ public class Step1Workspace {
     extProg.setMinSize(450, 15);
     extProg.setPadding(new Insets(25, 0, 0, 0));
     progressLock = new ReentrantLock();
-    
+    OutputWindow = new TextArea();
     
     bbs = FXCollections.observableArrayList();
     
@@ -236,19 +236,22 @@ public class Step1Workspace {
             ObservableList<String> selectedItem = BBSubs.getSelectionModel().getSelectedItems();
             
             ArrayList<ZipFile> zips = new ArrayList<>();
+            
             String title = app.getGUI().getWindow().getTitle().substring(13);
-            for (int i = 0; i < selectedItem.size(); i++) {
-                try {
-                    ZipFile newZip = new ZipFile(PATH_WORK + title + "\\blackboard\\" + selectedItem.get(i));
-                    zips.add(newZip);
-                } catch (ZipException ex) {
-                    Logger.getLogger(Step1Workspace.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
+            
             Task<Void> task = new Task<Void>() {
                 @Override
                 protected Void call() throws Exception {
 
+                    for (int i = 0; i < selectedItem.size(); i++) {
+                        try {
+                            ZipFile newZip = new ZipFile(PATH_WORK + title + "\\blackboard\\" + selectedItem.get(i));
+                            zips.add(newZip);
+                            
+                        } catch (ZipException ex) {
+                            Logger.getLogger(Step1Workspace.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
                     
                     for (int x = 0; x < zips.size(); x++) {
 
@@ -258,7 +261,7 @@ public class Step1Workspace {
 
                         for (int i = 0; i < subs.length; i++) {
                             if (subs[i].isFile() && subs[i].getName().endsWith(".zip")) {
-
+                                  
                             }
                         }
                         updateProgress(x+1, zips.size());

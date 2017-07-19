@@ -202,5 +202,8 @@ public class Step4Workspace {
     public HBox getStep4(){
         return MainBox;
     }
+    public ListView getzipfiles(){
+        return zipFiles;
+    }
 }
 

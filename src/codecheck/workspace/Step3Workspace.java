@@ -24,19 +24,25 @@ import static codecheck.style.CodeCheckStyle.CLASS_BOX;
 import static codecheck.style.CodeCheckStyle.CLASS_BUTTONBOX;
 import static codecheck.style.CodeCheckStyle.CLASS_BUTTONBOX_BUTTONS;
 import static codecheck.style.CodeCheckStyle.CLASS_PROMPT_LABEL;
+import static djf.settings.AppStartupConstants.PATH_WORK;
 import static djf.ui.AppGUI.CLASS_FILE_BUTTON;
+import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.ProgressIndicator;
+import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import net.lingala.zip4j.core.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
 import properties_manager.PropertiesManager;
 
@@ -101,9 +107,9 @@ public class Step3Workspace {
     MainBox = new HBox();
     LeftBox = new VBox();
     RightBox = new VBox();
-    unzipProg = new ProgressBar();
-    progInd = new ProgressIndicator(.47);
-    unzipProg.setProgress(progInd.getProgress());
+    unzipProg = new ProgressBar(0);
+    progInd = new ProgressIndicator();
+    //unzipProg.setProgress(progInd.getProgress());
     progInd.setProgress(50);
     ProgPercentLabel = new Label(props.getProperty(PROGP_LABEL));
     unzipProg.setMinSize(450, 15);
@@ -152,11 +158,44 @@ public class Step3Workspace {
             }
         });
         Unzip.setOnAction(e ->{
-           try {
-               controller.handleUnzip();
-           } catch (ZipException ex) {
-               Logger.getLogger(Step3Workspace.class.getName()).log(Level.SEVERE, null, ex);
-           }
+//           try {
+//               controller.handleUnzip();
+//           } catch (ZipException ex) {
+//               Logger.getLogger(Step3Workspace.class.getName()).log(Level.SEVERE, null, ex);
+//           }
+            SZips.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+
+            ObservableList<String> selectedItems = SZips.getSelectionModel().getSelectedItems();
+            String title = app.getGUI().getWindow().getTitle().substring(13);
+            File subDirectory = new File(PATH_WORK + title + "\\submissions\\");
+            //SZips.getSelectionModel().clearSelection();
+            Task<Void> task = new Task<Void>() {
+           
+                @Override
+                protected Void call() throws Exception {
+                    for (int i = 0; i < selectedItems.size(); i++) {
+                        ZipFile z;
+                        try {
+                            String s = selectedItems.get(i);
+                            z = new ZipFile(subDirectory.getAbsolutePath() + "\\" + s);
+                            File directory = new File(PATH_WORK + title + "\\projects\\" + s.split("\\.")[0]);
+                            z.extractAll(directory.getAbsolutePath());
+                        } catch (ZipException ex) {
+                            Logger.getLogger(Step3Workspace.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                        updateProgress(i+1, selectedItems.size());
+                        Thread.sleep(5);
+                        
+                    }
+                    return null;
+                    
+                }
+                
+            };
+            Thread thread = new Thread(task);
+            unzipProg.progressProperty().bind(task.progressProperty());
+            thread.start();
+            
         });
     }
     private void initStyle(){
@@ -172,6 +211,8 @@ public class Step3Workspace {
         tableLabel.getStyleClass().add(CLASS_PROMPT_LABEL);
         ProgPercentLabel.getStyleClass().add(CLASS_PROMPT_LABEL);
     }
+    
+   
     public HBox getStep3(){
         return MainBox;
     }
