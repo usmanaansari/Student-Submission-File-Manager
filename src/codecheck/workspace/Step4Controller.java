@@ -43,8 +43,8 @@ public class Step4Controller {
             File[] files = theFile.listFiles();
             ObservableList<String> sbs = FXCollections.observableArrayList();
             for (File f : files) {
-                if (f.getName().equals("submissions")) {
-                    File sbFile = new File(theFile.getAbsolutePath() + "\\submissions\\");
+                if (f.getName().equals("projects")) {
+                    File sbFile = new File(theFile.getAbsolutePath() + "\\projects\\");
                     for (File s : sbFile.listFiles()) {
                         if(s.getName().contains(".txt")){
                             
@@ -85,7 +85,7 @@ public class Step4Controller {
         zipFiles.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
 
         String selectedItem = (String) zipFiles.getSelectionModel().getSelectedItem();
-        String path = PATH_WORK + app.getGUI().getWindow().getTitle().substring(13) + "\\submissions\\";
+        String path = PATH_WORK + app.getGUI().getWindow().getTitle().substring(13) + "\\projects\\";
         //ystem.out.print(path);
         //File file = new File(path);
 
@@ -103,7 +103,7 @@ public class Step4Controller {
         zipFiles.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
 
         String selectedItem = (String) zipFiles.getSelectionModel().getSelectedItem();
-        String path = PATH_WORK + app.getGUI().getWindow().getTitle().substring(13) + "\\submissions\\";
+        String path = PATH_WORK + app.getGUI().getWindow().getTitle().substring(13) + "\\projects\\";
        
         File f = new File(path + selectedItem);
 
@@ -119,14 +119,15 @@ public class Step4Controller {
         alert.setTitle(props.getProperty(STEP1_VIEWT));
         alert.setHeaderText("Here are the contents of " + selectedItem);
         TextArea text = new TextArea();
-        ZipFile directory = new ZipFile(path + selectedItem);
-        List fileHeaderList = directory.getFileHeaders();
+        File directory = new File(path + selectedItem);
+        File[] fileHeaderList = directory.listFiles();
+       
         TreeItem<String> root = new TreeItem<>(selectedItem);
         root.setExpanded(true);
-        for (int i = 0 ; i< fileHeaderList.size(); i++) {
-            FileHeader fileHeader = (FileHeader) fileHeaderList.get(i);
-            TreeItem<String> item = new TreeItem<>(fileHeader.getFileName());
-            if (fileHeader.getFileName().contains(".txt")) {
+        for (int i = 0 ; i< fileHeaderList.length; i++) {
+            File fileHeader = fileHeaderList[i];
+            TreeItem<String> item = new TreeItem<>(fileHeader.getName());
+            if (fileHeader.getName().contains(".txt")) {
 
             } else {
                 root.getChildren().add(item);

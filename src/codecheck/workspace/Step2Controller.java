@@ -63,6 +63,7 @@ public class Step2Controller {
                     }
                 }
             }
+            //if(refreshRename)
             work2.getSSubs().setItems(sbs);
         }
 
@@ -262,6 +263,15 @@ public class Step2Controller {
 //        
 //        return;
 //    }
+    //                    Collections.sort(zips);
+//                    Collections.sort(texts);
+//                    //SSubs.getItems().clear();
+//                    ObservableList<String> items = SSubs.getItems();
+//                    for (String s : items) {
+//                        items.remove(s);
+//                    }
+//                    SSubs.getItems().addAll(zips);
+//                    SSubs.getItems().addAll(texts);
 
     public static void delete(File file)
             throws IOException {

@@ -88,11 +88,9 @@ public class Step1Controller {
 
         String selectedItem = (String) BBSubs.getSelectionModel().getSelectedItem();
         String path = PATH_WORK + app.getGUI().getWindow().getTitle().substring(13) + "\\blackboard\\";
-        //ystem.out.print(path);
-        //File file = new File(path);
 
         File f = new File(path + selectedItem);
-        //System.out.println(selectedItem);
+     
         f.delete();
         handleRefresh();
         

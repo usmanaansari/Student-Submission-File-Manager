@@ -33,6 +33,9 @@ import static codecheck.style.CodeCheckStyle.CLASS_FTYPE_BOX;
 import static codecheck.style.CodeCheckStyle.CLASS_FTYPE_LABEL;
 import static codecheck.style.CodeCheckStyle.CLASS_PROMPT_LABEL;
 import static djf.ui.AppGUI.CLASS_FILE_BUTTON;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -46,6 +49,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import net.lingala.zip4j.exception.ZipException;
 import properties_manager.PropertiesManager;
 
 /**
@@ -56,7 +60,7 @@ public class Step4Workspace {
     CodeCheckApp app;
    //Step1Controller controller;
    CodeCheckData data;
-   
+   Step4Controller controller;
    
    Label Step4Label;
    Label Step4Desc;
@@ -98,7 +102,7 @@ public class Step4Workspace {
    
    public Step4Workspace(CodeCheckApp initApp){
        app = initApp;
-       
+       controller = new Step4Controller(app);
        
        initLayout();
        
@@ -173,7 +177,31 @@ public class Step4Workspace {
     MainBox.setSpacing(50);
     }
     private void initControllers(){
-       // controller = new Step1Controller(app);
+       Remove.setOnAction(e -> {
+           try {
+               controller.handleRemove();
+           } catch (IOException ex) {
+               Logger.getLogger(Step4Workspace.class.getName()).log(Level.SEVERE, null, ex);
+           }
+       });
+       zipFiles.getSelectionModel().selectedItemProperty().addListener(e->
+        {
+                controller.handleSelect();
+        });
+       View.setOnAction(e -> {
+           try {
+               controller.handleView();
+           } catch (ZipException ex) {
+               Logger.getLogger(Step4Workspace.class.getName()).log(Level.SEVERE, null, ex);
+           }
+       });
+       Refresh.setOnAction(e -> {
+           try {
+               controller.handleRefresh();
+           } catch (IOException ex) {
+               Logger.getLogger(Step4Workspace.class.getName()).log(Level.SEVERE, null, ex);
+           }
+       });
     }
     private void initStyle(){
         Refresh.getStyleClass().add(CLASS_BUTTONBOX_BUTTONS);

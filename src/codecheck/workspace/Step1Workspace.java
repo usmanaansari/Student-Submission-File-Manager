@@ -203,6 +203,11 @@ public class Step1Workspace {
                         BBSubs.getFocusModel().focus(-1);
                         View.setDisable(false);
                         Remove.setDisable(false);
+                        if(BBSubs.getSelectionModel().getSelectedItems().size() > 1){
+                        View.setDisable(true);
+                        Remove.setDisable(true);
+                        }
+                        
                     } else {
                         BBSubs.getSelectionModel().select(index);
                         if(BBSubs.getSelectionModel().getSelectedItems().size() > 1){

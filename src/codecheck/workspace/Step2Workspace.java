@@ -33,6 +33,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
@@ -165,97 +166,91 @@ public class Step2Workspace {
 //           } catch (IOException ex) {
 //               Logger.getLogger(Step2Workspace.class.getName()).log(Level.SEVERE, null, ex);
 //           }
-            ObservableList<String> tableData = SSubs.getItems();
+            
             ObservableList<String> netIDS = FXCollections.observableArrayList();
             String subPath = PATH_WORK + app.getGUI().getWindow().getTitle().substring(13) + "\\submissions\\";
-            ArrayList<File> files = new ArrayList<>();
+            ObservableList<File> files = FXCollections.observableArrayList();
             String title = app.getGUI().getWindow().getTitle().substring(13);
-            
+            ObservableList<String> zips = FXCollections.observableArrayList();
+            ObservableList<String> texts = FXCollections.observableArrayList();
+           try {
+               controller.handleRename();
             Task<Void> task = new Task<Void>() {
                 @Override
                 protected Void call() throws Exception {
-                        for(int i = 0; i < tableData.size(); i++){
-                            String s = tableData.get(i);
-                            if (s.endsWith(".zip")) {
-                            if (s.contains("_")) {
-                                String netID = s.split("_")[1];
-                                netIDS.add(netID + ".zip");
-                            } else {
+                    File directory = new File(subPath);
+//                    for (File listFile : directory.listFiles()) {
+//                        files.add(listFile);
+//                    }
+                    ObservableList<String> tableData = SSubs.getItems();
+                    for(String s: tableData){
+                        if(s.endsWith(".zip")){
+                            if(s.contains("_")){
+                                String net = s.split("_")[1];
+                                netIDS.add(net + ".zip");
+                            }
+                            else{
                                 netIDS.add(s);
                             }
-
-                        } else {
-                            netIDS.add(s);
                         }
-                        }
-
-                    
-                    File directory = new File(subPath);
-                    for( int j = 0; j < directory.listFiles().length; j++){
-                        File f = directory.listFiles()[j];
-                        if (f.getAbsolutePath().endsWith(".txt")) {
-
-                        } else if (f.getAbsolutePath().endsWith(".zip")) {
-                            if (f.getName().contains("_")) {
-                                String name = f.getName().split("_")[1];
-                                File newFile = new File(subPath + name + ".zip");
-                                if (newFile.exists()) {
-                                    f.delete();
-                                } else {
-                                    f.renameTo(newFile);
-                                }
-                            }
-
-                        }
-                        File[] dir = directory.listFiles();
-                        updateProgress(j+1, directory.listFiles().length);
-                        Thread.sleep(5);
+                        updateProgress(tableData.indexOf(s)+1, directory.listFiles().length);
                     }
-                    //System.out.println(directory.listFiles().toString());
-                    
-
-                    return null;
-                }
-//                @Override
-//                protected Void call() throws Exception {
-//
-//                    for (int i = 0; i < selectedItem.size(); i++) {
-//                        ZipFile newZip = new ZipFile(PATH_WORK + title + "\\blackboard\\" + selectedItem.get(i));
-//                        zips.add(newZip);
-//                    }
-//                    
-//                    for (int x = 0; x < zips.size(); x++) {
-//
-//                        File subFolder = new File(PATH_WORK + title + "\\submissions\\");
-//                        zips.get(x).extractAll(subFolder.getAbsolutePath());
-//                        File[] subs = subFolder.listFiles();
-//
-//                        for (int i = 0; i < subs.length; i++) {
-//                            if (subs[i].isFile() && subs[i].getName().endsWith(".zip")) {
-//                                  
+//                    for(int i = 0; i< files.size(); i++){
+//                        if(files.get(i).getName().endsWith(".zip")){
+//                            if(files.get(i).getName().contains("_")){
+//                                String name = files.get(i).getName().split("_")[1];
+//                                File netID = new File(subPath + name + ".zip");
+//                                if(netID.exists()){
+//                                    
+//                                }
+//                                else{
+//                                files.get(i).renameTo(netID);
+//                                zips.add(netID.getName());
+//                                }
+//                            }
+//                            else{
+//                                String name = files.get(i).getName();
+//                                File netID = new File(subPath + name);
+//                                
+//                                zips.add(netID.getName());
 //                            }
 //                        }
-//                        updateProgress(x+1, zips.size());
-//                        Thread.sleep(5);
+//                        else{
+//                            
+//                            texts.add(files.get(i).getName());
+//                        }
+//                    
+//                        
 //                    }
-//                    return null;
-//                }
+
+
+
+                     
+                     Platform.runLater(new Runnable() {
+                     @Override public void run() {
+                         try {
+                             controller.handleRefresh();
+                         } catch (IOException ex) {
+                             Logger.getLogger(Step2Workspace.class.getName()).log(Level.SEVERE, null, ex);
+                         }
+                     }
+                 });
+                    Thread.sleep(5);
+                    return null;
+                }
                 
             };
-            SSubs.getItems().setAll(netIDS);
-            Collections.sort(SSubs.getItems());
             Thread thread = new Thread(task);
             extProg.progressProperty().bind(task.progressProperty());
             thread.start();
+           } catch (IOException ex) {
+               Logger.getLogger(Step2Workspace.class.getName()).log(Level.SEVERE, null, ex);
+           }
+           
+           
             
             
 
-            try {
-                //System.out.print(directory.getAbsolutePath());
-                controller.handleRefresh();
-            } catch (IOException ex) {
-                Logger.getLogger(Step2Workspace.class.getName()).log(Level.SEVERE, null, ex);
-            }
         });
     }
     private void initStyle(){
