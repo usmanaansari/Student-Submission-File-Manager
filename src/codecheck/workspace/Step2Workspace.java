@@ -200,7 +200,7 @@ public class Step2Workspace {
 //           } catch (IOException ex) {
 //               Logger.getLogger(Step2Workspace.class.getName()).log(Level.SEVERE, null, ex);
 //           }
-            
+            OutputWindow.clear();
             ObservableList<String> netIDS = FXCollections.observableArrayList();
             String subPath = PATH_WORK + app.getGUI().getWindow().getTitle().substring(13) + "\\submissions\\";
             ObservableList<File> files = FXCollections.observableArrayList();
@@ -221,6 +221,7 @@ public class Step2Workspace {
                             if(s.contains("_")){
                                 String net = s.split("_")[1];
                                 netIDS.add(net + ".zip");
+                                success.add(s + " was successfully renamed to: " + net + ".zip" + "\n");
                             }
                             else{
                                 netIDS.add(s);
@@ -228,12 +229,13 @@ public class Step2Workspace {
                         }
                         else{
                             netIDS.add(s);
+                            fail.add(s + " failed to be renamed \n" );
                         }
                        
                     }
                     for (int z = 0; z< directory.listFiles().length; z++) {
                                 if (directory.listFiles()[z].getAbsolutePath().endsWith(".txt")) {
-                                    fail.add(directory.listFiles()[z].getName() + " failed to be renamed \n");
+                                    //fail.add(directory.listFiles()[z].getName() + " failed to be renamed \n");
                                 } 
                                 else if (directory.listFiles()[z].getPath().endsWith(".zip")) {
                                     if (directory.listFiles()[z].getName().contains("_")) {
@@ -243,8 +245,9 @@ public class Step2Workspace {
                                             directory.listFiles()[z].delete();
                                         } else {
                                             directory.listFiles()[z].renameTo(newFile);
+                                            //success.add(directory.listFiles()[z].getName() + "was successfully renamed to: " + newFile.getName() +"\n" );
                                         }
-                                        success.add(directory.listFiles()[z].getName() + "was successfully renamed to: " + newFile.getName() +"\n" );
+                                        
                                     }
                                     
                                 }
@@ -264,10 +267,10 @@ public class Step2Workspace {
                                 controller.handleRefresh();
                                 controller3.handleRefresh();
                                 for(String s: success){
-                                    //OutputWindow.appendText(s);
+                                    OutputWindow.appendText(s);
                                 }
                                 for(String i : fail){
-                                    //OutputWindow.appendText("\n" + i);
+                                    OutputWindow.appendText("\n" + i);
                                 }
                             } catch (IOException ex) {
                                 Logger.getLogger(Step2Workspace.class.getName()).log(Level.SEVERE, null, ex);
