@@ -59,7 +59,10 @@ public class Step2Controller {
                 if (f.getName().equals("submissions")) {
                     File sbFile = new File(theFile.getAbsolutePath() + "\\submissions\\");
                     for (File s : sbFile.listFiles()) {
-                        sbs.add(s.getName());
+                        if(s.getName().endsWith(".rar")){
+                            
+                        }else{
+                        sbs.add(s.getName()); }
                     }
                 }
             }

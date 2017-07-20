@@ -210,10 +210,13 @@ public class Step3Workspace {
                     for (int i = 0; i < selectedItems.size(); i++) {
                         ZipFile z;
                         try {
+                            
                             String s = selectedItems.get(i);
                             z = new ZipFile(subDirectory.getAbsolutePath() + "\\" + s);
                             File directory = new File(PATH_WORK + title + "\\projects\\" + s.split("\\.")[0] + "_work");
+                            if(z.isValidZipFile()){
                             z.extractAll(directory.getAbsolutePath());
+                            }
                         } catch (ZipException ex) {
                             Logger.getLogger(Step3Workspace.class.getName()).log(Level.SEVERE, null, ex);
                         }

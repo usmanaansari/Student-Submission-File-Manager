@@ -40,6 +40,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -253,14 +254,24 @@ public class Step4Workspace {
            //ObservableList<String>
            ArrayList<File> projFolderList = new ArrayList<>();
            ArrayList<File> list = new ArrayList<>();
-           IOFileFilter fileFilter = new WildcardFileFilter("*.java");
+           IOFileFilter fileFilterJ = new WildcardFileFilter("*.java");
+           IOFileFilter fileFilterC = new WildcardFileFilter("*.c");
+           ArrayList<File> files = new ArrayList<File>();
            ArrayList<File> fileNames = new ArrayList<>();
            String[] names = new String[1];
-           names[0] = ".java";
+           names[0] = "*.java";
            
            Task<Void> task = new Task<Void>() {
                @Override
                protected Void call() throws Exception {
+                   return null;
+               }
+               
+               
+           };
+           Task<ArrayList<File>> task1 = new Task<ArrayList<File>>(){
+               @Override
+               protected ArrayList<File> call() throws Exception {
                    try{
                    
                    ObservableList<String> tableData = zipFiles.getItems();
@@ -268,50 +279,36 @@ public class Step4Workspace {
                     for(String s : tableData){
                        File folder = new File(projPath);
                         File proj = new File(projPath + s);
-                        projFolderList.addAll(Arrays.asList(proj.listFiles()));
-                    }
-                        for (int i = 0; i < projFolderList.size(); i++) {
-                            File ok = projFolderList.get(i);
-                            list.add(ok);
-                            //System.out.println(list.get(i));
-                            //fileNames.addAll(Arrays.asList(files));
-                           if(list.get(i).isDirectory()){
-                              //System.out.println(list.get(i).getPath());
-                               Collection files = FileUtils.listFiles(ok, fileFilter, TrueFileFilter.TRUE);
+                           projFolderList.addAll(Arrays.asList(proj.listFiles()));
+                       }
+                       for (int i = 0; i < projFolderList.size(); i++) {
+                           File ok = projFolderList.get(i);
+                           list.add(ok);
+                           //System.out.println(list.get(i));
+                           //fileNames.addAll(Arrays.asList(files));
+                           if (list.get(i).isDirectory()) {
+                               //System.out.println(list.get(i).getPath());
+                               Collection files = FileUtils.listFiles(ok, fileFilterJ, TrueFileFilter.TRUE);
                                System.out.println(files.toString());
-                               
-//                           Iterator it = FileUtils.iterateFiles(list.get(i), names, true);
-//                           while (!(it.hasNext())) {
-//                               File f = (File) it.next();
-//                               for(File w : f.listFiles()){
-//                                   if(w.getName().endsWith(".java")){
-//                                       System.out.println(w.getName());
-//                                   }
-//                               }
-//                           }
-                        }
-                        }
-                        //System.out.print(fileNames.get(0).getName() + fileNames.get(1).getName() + fileNames.get(2).getName() );
-//                       if(proj.isDirectory()){
-//                       File[] files = proj.listFiles();
-//                      
-//                       list.addAll(Arrays.asList(files));
-//                       System.out.print(list.get(2).getName());
-                         
-                   
-                   
-                   }
-                   catch(Exception e){
-                       if(!(isCancelled())){
+                               //System.out.print(files.get(i).getName());
+                               //if(i == projFolderList.size()){
+                               //return files;}
+                           }
+
+                       }
+                       final Collection files1;
+                       System.out.println(fileNames.toString());
+                   } catch (Exception e) {
+                       if (!(isCancelled())) {
                            e.printStackTrace();
                        }
                    }
+
                    return null;
                }
                
-               
            };
-           Thread thread = new Thread(task);
+           Thread thread = new Thread(task1);
            thread.start();
        });
     }

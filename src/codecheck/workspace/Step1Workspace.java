@@ -56,6 +56,7 @@ import javafx.scene.layout.VBox;
 import javafx.util.Callback;
 import net.lingala.zip4j.core.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
+import net.lingala.zip4j.model.FileHeader;
 import net.lingala.zip4j.progress.ProgressMonitor;
 import org.apache.commons.io.filefilter.IOFileFilter;
 import properties_manager.PropertiesManager;
@@ -244,44 +245,59 @@ public class Step1Workspace {
             }
         });
         Extract.setOnAction((ActionEvent e) ->{ 
-
+            OutputWindow.clear();
             BBSubs.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
             ObservableList<String> selectedItem = BBSubs.getSelectionModel().getSelectedItems();
             
             ArrayList<ZipFile> zips = new ArrayList<>();
             
             String title = app.getGUI().getWindow().getTitle().substring(13);
-            
+            ArrayList<String> success = new ArrayList<>();
+            ArrayList<String> fail = new ArrayList<>();
             Task<Void> task = new Task<Void>() {
                 @Override
                 protected Void call() throws Exception {
-
+                    
                     for (int i = 0; i < selectedItem.size(); i++) {
                         try {
                             ZipFile newZip = new ZipFile(PATH_WORK + title + "\\blackboard\\" + selectedItem.get(i));
+                            List fileHeaderList = newZip.getFileHeaders();
                             zips.add(newZip);
+                            
                             //OutputWindow.appendText(zips.get(i).getFile().getName());
-
+                            
+                            for(int p = 0; p < fileHeaderList.size(); p ++){
+                                FileHeader fileHeader = (FileHeader) fileHeaderList.get(p);
+                                if(fileHeader.getFileName().endsWith(".rar")){
+                                    fail.add(fileHeader.getFileName() + " failed to extract \n");
+                                    //fileHeaderList.remove(fileHeader.getFileName());
+                                }
+                                else{
+                                    success.add(fileHeader.getFileName() + " was successfully extracted! \n");
+                                }
+                            }
                         } catch (ZipException ex) {
                             Logger.getLogger(Step1Workspace.class.getName()).log(Level.SEVERE, null, ex);
                         }
+                        
                     }
+                    
+                    
                     File subFolder = new File(PATH_WORK + title + "\\submissions\\");
                     for (int x = 0; x < zips.size(); x++) {
-
-                        zips.get(x).extractAll(subFolder.getAbsolutePath());                       
+                        
+                        zips.get(x).extractAll(subFolder.getAbsolutePath());    
+                        
                         File[] subs = subFolder.listFiles();
-
-                        for (int i = 0; i < subs.length; i++) {
-                            if (subs[i].isFile() && subs[i].getName().endsWith(".zip")) {
-
-                            }
-                        }
                 
                         updateProgress(x + 1, zips.size());
                         Thread.sleep(5);
                     }
-                    
+                    for(int d = 0; d < subFolder.listFiles().length; d++){
+                        if(subFolder.listFiles()[d].getName().endsWith(".rar")){
+                            subFolder.listFiles()[d].delete();
+                        }
+                    }
                     Platform.runLater(new Runnable(){
                         @Override
                         public void run() {
@@ -289,6 +305,13 @@ public class Step1Workspace {
                             try {
                                 controller2.handleRefresh();
                                 controller3.handleRefresh();
+                                for(String s: success){
+                                    OutputWindow.appendText(s);
+                                }
+                                for(String i : fail){
+                                    OutputWindow.appendText("\n" + i);
+                                }
+                                
                             } catch (IOException ex) {
                                 Logger.getLogger(Step1Workspace.class.getName()).log(Level.SEVERE, null, ex);
                             }

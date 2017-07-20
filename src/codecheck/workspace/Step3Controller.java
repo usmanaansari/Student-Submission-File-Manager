@@ -50,7 +50,7 @@ public class Step3Controller {
                 if (f.getName().equals("submissions")) {
                     File sbFile = new File(theFile.getAbsolutePath() + "\\submissions\\");
                     for (File s : sbFile.listFiles()) {
-                        if(s.getName().contains(".txt")){
+                        if((s.getName().contains(".txt")) || (s.getName().contains(".rar"))){
                             
                         }
                         else{

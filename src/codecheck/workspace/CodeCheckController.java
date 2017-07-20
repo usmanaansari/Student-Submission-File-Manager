@@ -359,7 +359,7 @@ public class CodeCheckController {
                 File SbFile = new File(selectedFile.getAbsolutePath() + "\\submissions\\");
                 for (File s : SbFile.listFiles()) {
                     Sbs.add(s);
-                    if(s.getAbsolutePath().contains(".zip")){
+                    if(s.getAbsolutePath().endsWith(".zip")){
                     studs.add(s.getName());
                     }
                 }

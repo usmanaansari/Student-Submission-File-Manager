@@ -208,6 +208,8 @@ public class Step2Workspace {
             ObservableList<String> zips = FXCollections.observableArrayList();
             ObservableList<String> texts = FXCollections.observableArrayList();
             //controller.handleRename();
+            ArrayList<String> success = new ArrayList<>();
+            ArrayList<String> fail = new ArrayList<>();
             Task<Void> task = new Task<Void>() {
                 @Override
                 protected Void call() throws Exception {
@@ -231,7 +233,7 @@ public class Step2Workspace {
                     }
                     for (int z = 0; z< directory.listFiles().length; z++) {
                                 if (directory.listFiles()[z].getAbsolutePath().endsWith(".txt")) {
-
+                                    fail.add(directory.listFiles()[z].getName() + " failed to be renamed \n");
                                 } 
                                 else if (directory.listFiles()[z].getPath().endsWith(".zip")) {
                                     if (directory.listFiles()[z].getName().contains("_")) {
@@ -242,10 +244,11 @@ public class Step2Workspace {
                                         } else {
                                             directory.listFiles()[z].renameTo(newFile);
                                         }
+                                        success.add(directory.listFiles()[z].getName() + "was successfully renamed to: " + newFile.getName() +"\n" );
                                     }
-
+                                    
                                 }
-                                 updateProgress(1, directory.listFiles().length -1);
+                                 updateProgress(z + 1, directory.listFiles().length );
                             }
                     
                     Thread.sleep(5);
@@ -260,6 +263,12 @@ public class Step2Workspace {
                             try {
                                 controller.handleRefresh();
                                 controller3.handleRefresh();
+                                for(String s: success){
+                                    //OutputWindow.appendText(s);
+                                }
+                                for(String i : fail){
+                                    //OutputWindow.appendText("\n" + i);
+                                }
                             } catch (IOException ex) {
                                 Logger.getLogger(Step2Workspace.class.getName()).log(Level.SEVERE, null, ex);
                             }
