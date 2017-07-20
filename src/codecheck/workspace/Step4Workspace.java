@@ -32,10 +32,18 @@ import static codecheck.style.CodeCheckStyle.CLASS_CHECKBOX;
 import static codecheck.style.CodeCheckStyle.CLASS_FTYPE_BOX;
 import static codecheck.style.CodeCheckStyle.CLASS_FTYPE_LABEL;
 import static codecheck.style.CodeCheckStyle.CLASS_PROMPT_LABEL;
+import static djf.settings.AppStartupConstants.PATH_WORK;
 import static djf.ui.AppGUI.CLASS_FILE_BUTTON;
+import java.io.File;
+import java.io.FileFilter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -46,10 +54,13 @@ import javafx.scene.control.ProgressBar;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TreeItem;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import net.lingala.zip4j.exception.ZipException;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.filefilter.WildcardFileFilter;
 import properties_manager.PropertiesManager;
 
 /**
@@ -201,6 +212,53 @@ public class Step4Workspace {
            } catch (IOException ex) {
                Logger.getLogger(Step4Workspace.class.getName()).log(Level.SEVERE, null, ex);
            }
+       });
+       ExtractCode.setOnAction(e ->{
+           //ObservableList<String>
+           ArrayList<File> projFolderList = new ArrayList<>();
+           ArrayList<File> list = new ArrayList<>();
+           FileFilter fileFilter = new WildcardFileFilter("*.java");
+           ArrayList<File> fileNames = new ArrayList<>();
+           String[] names = new String[1];
+           names[0] = ".java";
+           
+           Task<Void> task = new Task<Void>() {
+               @Override
+               protected Void call() throws Exception {
+                   ObservableList<String> tableData = zipFiles.getItems();
+                   String projPath = PATH_WORK + app.getGUI().getWindow().getTitle().substring(13) + "\\projects\\";
+                    for(String s : tableData){
+                       File folder = new File(projPath);
+                        File proj = new File(projPath + s);
+                        projFolderList.addAll(Arrays.asList(proj.listFiles()));
+                    }
+                        for (int i = 0; i < projFolderList.size(); i++) {
+                            File ok = projFolderList.get(i);
+                            list.add(ok);
+                            System.out.println(list.get(i));
+                            //fileNames.addAll(Arrays.asList(files));
+
+//                            Iterator it = FileUtils.iterateFiles(ok, names, true);
+//                            while (it.hasNext()) {
+//                                //System.out.println(((File) it.next()).getName());
+//                            }
+                        }
+                        //System.out.print(fileNames.get(0).getName() + fileNames.get(1).getName() + fileNames.get(2).getName() );
+//                       if(proj.isDirectory()){
+//                       File[] files = proj.listFiles();
+//                      
+//                       list.addAll(Arrays.asList(files));
+//                       System.out.print(list.get(2).getName());
+                       
+                       
+                   
+                   
+                   
+                   return null;
+               }
+           };
+           Thread thread = new Thread(task);
+           thread.start();
        });
     }
     private void initStyle(){

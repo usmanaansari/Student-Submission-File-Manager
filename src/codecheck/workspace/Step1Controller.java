@@ -153,6 +153,6 @@ public class Step1Controller {
                 prog.setProgress(progI.getProgress());
                 
             }
-  
+            work1.Extract.setDisable(true);
         }
 }

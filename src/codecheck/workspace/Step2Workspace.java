@@ -173,15 +173,12 @@ public class Step2Workspace {
             String title = app.getGUI().getWindow().getTitle().substring(13);
             ObservableList<String> zips = FXCollections.observableArrayList();
             ObservableList<String> texts = FXCollections.observableArrayList();
-           try {
-               controller.handleRename();
+            //controller.handleRename();
             Task<Void> task = new Task<Void>() {
                 @Override
                 protected Void call() throws Exception {
                     File directory = new File(subPath);
-//                    for (File listFile : directory.listFiles()) {
-//                        files.add(listFile);
-//                    }
+
                     ObservableList<String> tableData = SSubs.getItems();
                     for(String s: tableData){
                         if(s.endsWith(".zip")){
@@ -193,49 +190,49 @@ public class Step2Workspace {
                                 netIDS.add(s);
                             }
                         }
-                        updateProgress(tableData.indexOf(s)+1, directory.listFiles().length);
+                        else{
+                            netIDS.add(s);
+                        }
+                       
                     }
-//                    for(int i = 0; i< files.size(); i++){
-//                        if(files.get(i).getName().endsWith(".zip")){
-//                            if(files.get(i).getName().contains("_")){
-//                                String name = files.get(i).getName().split("_")[1];
-//                                File netID = new File(subPath + name + ".zip");
-//                                if(netID.exists()){
-//                                    
-//                                }
-//                                else{
-//                                files.get(i).renameTo(netID);
-//                                zips.add(netID.getName());
-//                                }
-//                            }
-//                            else{
-//                                String name = files.get(i).getName();
-//                                File netID = new File(subPath + name);
-//                                
-//                                zips.add(netID.getName());
-//                            }
-//                        }
-//                        else{
-//                            
-//                            texts.add(files.get(i).getName());
-//                        }
-//                    
-//                        
-//                    }
+                    for (int z = 0; z< directory.listFiles().length; z++) {
+                                if (directory.listFiles()[z].getAbsolutePath().endsWith(".txt")) {
 
+                                } 
+                                else if (directory.listFiles()[z].getPath().endsWith(".zip")) {
+                                    if (directory.listFiles()[z].getName().contains("_")) {
+                                        String name = directory.listFiles()[z].getName().split("_")[1];
+                                        File newFile = new File(subPath + name + ".zip");
+                                        if (newFile.exists()) {
+                                            directory.listFiles()[z].delete();
+                                        } else {
+                                            directory.listFiles()[z].renameTo(newFile);
+                                        }
+                                    }
 
-
-                     
-                     Platform.runLater(new Runnable() {
-                     @Override public void run() {
-                         try {
-                             controller.handleRefresh();
-                         } catch (IOException ex) {
-                             Logger.getLogger(Step2Workspace.class.getName()).log(Level.SEVERE, null, ex);
-                         }
-                     }
-                 });
+                                }
+                                 updateProgress(1, directory.listFiles().length -1);
+                            }
+                    
                     Thread.sleep(5);
+
+                    Platform.runLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            SSubs.getItems().setAll(netIDS);
+                            Collections.sort(SSubs.getItems());
+                            
+                            
+                            try {
+                                controller.handleRefresh();
+                            } catch (IOException ex) {
+                                Logger.getLogger(Step2Workspace.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                        
+                        }
+                    });
+                    
+                    
                     return null;
                 }
                 
@@ -243,13 +240,6 @@ public class Step2Workspace {
             Thread thread = new Thread(task);
             extProg.progressProperty().bind(task.progressProperty());
             thread.start();
-           } catch (IOException ex) {
-               Logger.getLogger(Step2Workspace.class.getName()).log(Level.SEVERE, null, ex);
-           }
-           
-           
-            
-            
 
         });
     }

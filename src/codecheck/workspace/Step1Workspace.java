@@ -26,6 +26,8 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
@@ -55,6 +57,7 @@ import javafx.util.Callback;
 import net.lingala.zip4j.core.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
 import net.lingala.zip4j.progress.ProgressMonitor;
+import org.apache.commons.io.filefilter.IOFileFilter;
 import properties_manager.PropertiesManager;
 
 /**
@@ -126,7 +129,7 @@ public class Step1Workspace {
     extProg = new ProgressBar(0);
     progInd = new ProgressIndicator();
     //extProg.setProgress(progInd.getProgress());
-    ProgPercentLabel = new Label(props.getProperty(PROGP_LABEL));
+    ProgPercentLabel = new Label();
     extProg.setMinSize(450, 15);
     extProg.setPadding(new Insets(25, 0, 0, 0));
     progressLock = new ReentrantLock();
@@ -154,7 +157,7 @@ public class Step1Workspace {
     OutputWindow.setMinSize(900, 600);
     LeftBox.setPadding(new Insets(0, 0, 0, 10));
     RightBox.setSpacing(45);
-    
+    Extract.setDisable(true);
     buttons.getChildren().addAll(Remove, Refresh, View);
     progBox.getChildren().addAll(ProgLabel, extProg, ProgPercentLabel);
     LeftBox.getChildren().addAll(Step1Label, Step1Desc, tableLabel, BBSubs, buttons);
@@ -173,6 +176,7 @@ public class Step1Workspace {
         BBSubs.getSelectionModel().selectedItemProperty().addListener(e->
         {
                 controller.handleSelect();
+                Extract.setDisable(false);
         });
 //        BBSubs.setCellFactory(new Callback<ListView<String>, ListCell<String>>() {  
 //            @Override
@@ -208,7 +212,8 @@ public class Step1Workspace {
                         Remove.setDisable(true);
                         }
                         
-                    } else {
+                    }
+                    else {
                         BBSubs.getSelectionModel().select(index);
                         if(BBSubs.getSelectionModel().getSelectedItems().size() > 1){
                         View.setDisable(true);
@@ -252,31 +257,34 @@ public class Step1Workspace {
                         try {
                             ZipFile newZip = new ZipFile(PATH_WORK + title + "\\blackboard\\" + selectedItem.get(i));
                             zips.add(newZip);
-                            
+                            //OutputWindow.appendText(zips.get(i).getFile().getName());
+
                         } catch (ZipException ex) {
                             Logger.getLogger(Step1Workspace.class.getName()).log(Level.SEVERE, null, ex);
                         }
                     }
-                    
+                    File subFolder = new File(PATH_WORK + title + "\\submissions\\");
                     for (int x = 0; x < zips.size(); x++) {
 
-                        File subFolder = new File(PATH_WORK + title + "\\submissions\\");
-                        zips.get(x).extractAll(subFolder.getAbsolutePath());
+                        zips.get(x).extractAll(subFolder.getAbsolutePath());                       
                         File[] subs = subFolder.listFiles();
 
                         for (int i = 0; i < subs.length; i++) {
                             if (subs[i].isFile() && subs[i].getName().endsWith(".zip")) {
-                                  
+
                             }
                         }
-                        updateProgress(x+1, zips.size());
+                
+                        updateProgress(x + 1, zips.size());
                         Thread.sleep(5);
                     }
+
                     return null;
                 }
             };
             Thread thread = new Thread(task);
             extProg.progressProperty().bind(task.progressProperty());
+            
             thread.start();
         });
                 
