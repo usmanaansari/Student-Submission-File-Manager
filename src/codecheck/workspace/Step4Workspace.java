@@ -260,7 +260,7 @@ public class Step4Workspace {
            ArrayList<File> fileNames = new ArrayList<>();
            String[] names = new String[1];
            names[0] = "*.java";
-           
+           ArrayList<File> individualFiles = new ArrayList<>();
            Task<Void> task = new Task<Void>() {
                @Override
                protected Void call() throws Exception {
@@ -284,20 +284,41 @@ public class Step4Workspace {
                        for (int i = 0; i < projFolderList.size(); i++) {
                            File ok = projFolderList.get(i);
                            list.add(ok);
-                           //System.out.println(list.get(i));
-                           //fileNames.addAll(Arrays.asList(files));
                            if (list.get(i).isDirectory()) {
-                               //System.out.println(list.get(i).getPath());
                                Collection files = FileUtils.listFiles(ok, fileFilterJ, TrueFileFilter.TRUE);
-                               System.out.println(files.toString());
-                               //System.out.print(files.get(i).getName());
-                               //if(i == projFolderList.size()){
-                               //return files;}
+                               for (Iterator<File> iterator = files.iterator(); iterator.hasNext();) {
+                                   File f = iterator.next();
+                                   
+                                   String name = f.getPath();
+                                   String yeah = name.substring(18);
+                                   //System.out.println(yeah);
+                                   String[] x = yeah.split("_");
+                                   String yes = yeah.substring(0, yeah.indexOf("\\"));
+                                   File personDir = new File(PATH_WORK + app.getGUI().getWindow().getTitle().substring(13) + "\\code\\" + yes);
+                                   
+                                   if(!personDir.exists()){
+                                       personDir.mkdir();
+                                       if(f.getPath().contains("\\" + yes + "\\")){
+                                           FileUtils.copyFileToDirectory(f, personDir);
+                                           
+                                       }
+                                   }
+                                   else if(personDir.exists()){
+                                       if(f.getPath().contains("\\" + yes + "\\")){
+                                           FileUtils.copyFileToDirectory(f, personDir);
+                                           
+                                       }
+                                   }
+                                   
+                                   
+                                   
+                               }
+                               File work = new File(PATH_WORK + app.getGUI().getWindow().getTitle().substring(13) + "\\code\\");
                            }
 
                        }
                        final Collection files1;
-                       System.out.println(fileNames.toString());
+                       ///System.out.println(fileNames.toString());
                    } catch (Exception e) {
                        if (!(isCancelled())) {
                            e.printStackTrace();
