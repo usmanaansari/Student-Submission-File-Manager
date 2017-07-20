@@ -40,10 +40,12 @@ import javafx.concurrent.Task;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TextArea;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import net.lingala.zip4j.core.ZipFile;
@@ -59,6 +61,7 @@ public class Step2Workspace {
    //Step1Controller controller;
    CodeCheckData data;
    Step2Controller controller;
+   Step3Controller controller3;
    
    Label Step2Label;
    Label Step2Desc;
@@ -85,7 +88,7 @@ public class Step2Workspace {
    public Step2Workspace(CodeCheckApp initApp){
        app = initApp;
        controller = new Step2Controller(app);
-       
+       controller3 = new Step3Controller(app);
        initLayout();
        
        initControllers();
@@ -160,6 +163,37 @@ public class Step2Workspace {
                 Logger.getLogger(Step1Workspace.class.getName()).log(Level.SEVERE, null, ex);
             }
         });
+         SSubs.setCellFactory(lv -> {
+            ListCell<String> cell = new ListCell<>();
+            cell.textProperty().bind(cell.itemProperty());
+            cell.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
+                SSubs.requestFocus();
+                if (! cell.isEmpty()) {
+                    int index = cell.getIndex();
+                    if (SSubs.getSelectionModel().getSelectedIndices().contains(index)) {
+                        SSubs.getSelectionModel().clearSelection(index);
+                        SSubs.getFocusModel().focus(-1);
+                        View.setDisable(false);
+                        Remove.setDisable(false);
+                        if(SSubs.getSelectionModel().getSelectedItems().size() > 1){
+                        View.setDisable(true);
+                        Remove.setDisable(true);
+                        }
+                        
+                    }
+                    else {
+                        SSubs.getSelectionModel().select(index);
+                        if(SSubs.getSelectionModel().getSelectedItems().size() > 1){
+                        View.setDisable(true);
+                        Remove.setDisable(true);
+                        }
+                        
+                    }
+                    event.consume();
+                }
+            });
+            return cell ;
+        });
         Rename.setOnAction(e -> {
 //           try {
 //               controller.handleRename();
@@ -225,6 +259,7 @@ public class Step2Workspace {
                             
                             try {
                                 controller.handleRefresh();
+                                controller3.handleRefresh();
                             } catch (IOException ex) {
                                 Logger.getLogger(Step2Workspace.class.getName()).log(Level.SEVERE, null, ex);
                             }

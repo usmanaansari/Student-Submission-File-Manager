@@ -67,6 +67,8 @@ import properties_manager.PropertiesManager;
 public class Step1Workspace {
    CodeCheckApp app;
    Step1Controller controller;
+   Step2Controller controller2;
+   Step3Controller controller3;
    CodeCheckData data;
    
    
@@ -97,7 +99,8 @@ public class Step1Workspace {
    public Step1Workspace(CodeCheckApp initApp){
        app = initApp;
        controller = new Step1Controller(app);
-       
+       controller2 = new Step2Controller(app);
+       controller3 = new Step3Controller(app);
        initLayout();
        
        initControllers();
@@ -278,9 +281,25 @@ public class Step1Workspace {
                         updateProgress(x + 1, zips.size());
                         Thread.sleep(5);
                     }
-
+                    
+                    Platform.runLater(new Runnable(){
+                        @Override
+                        public void run() {
+                            BBSubs.getSelectionModel().clearSelection();
+                            try {
+                                controller2.handleRefresh();
+                                controller3.handleRefresh();
+                            } catch (IOException ex) {
+                                Logger.getLogger(Step1Workspace.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                            
+                        }
+                        
+                    });
+                    
                     return null;
                 }
+                
             };
             Thread thread = new Thread(task);
             extProg.progressProperty().bind(task.progressProperty());

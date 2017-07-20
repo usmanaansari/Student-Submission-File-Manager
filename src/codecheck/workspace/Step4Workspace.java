@@ -39,6 +39,7 @@ import java.io.FileFilter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -49,17 +50,21 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TreeItem;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import net.lingala.zip4j.exception.ZipException;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.filefilter.IOFileFilter;
+import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 import properties_manager.PropertiesManager;
 
@@ -213,11 +218,42 @@ public class Step4Workspace {
                Logger.getLogger(Step4Workspace.class.getName()).log(Level.SEVERE, null, ex);
            }
        });
+       zipFiles.setCellFactory(lv -> {
+            ListCell<String> cell = new ListCell<>();
+            cell.textProperty().bind(cell.itemProperty());
+            cell.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
+                zipFiles.requestFocus();
+                if (! cell.isEmpty()) {
+                    int index = cell.getIndex();
+                    if (zipFiles.getSelectionModel().getSelectedIndices().contains(index)) {
+                        zipFiles.getSelectionModel().clearSelection(index);
+                        zipFiles.getFocusModel().focus(-1);
+                        View.setDisable(false);
+                        Remove.setDisable(false);
+                        if(zipFiles.getSelectionModel().getSelectedItems().size() > 1){
+                        View.setDisable(true);
+                        Remove.setDisable(true);
+                        }
+                        
+                    }
+                    else {
+                        zipFiles.getSelectionModel().select(index);
+                        if(zipFiles.getSelectionModel().getSelectedItems().size() > 1){
+                        View.setDisable(true);
+                        Remove.setDisable(true);
+                        }
+                        
+                    }
+                    event.consume();
+                }
+            });
+            return cell ;
+        });
        ExtractCode.setOnAction(e ->{
            //ObservableList<String>
            ArrayList<File> projFolderList = new ArrayList<>();
            ArrayList<File> list = new ArrayList<>();
-           FileFilter fileFilter = new WildcardFileFilter("*.java");
+           IOFileFilter fileFilter = new WildcardFileFilter("*.java");
            ArrayList<File> fileNames = new ArrayList<>();
            String[] names = new String[1];
            names[0] = ".java";
@@ -225,6 +261,8 @@ public class Step4Workspace {
            Task<Void> task = new Task<Void>() {
                @Override
                protected Void call() throws Exception {
+                   try{
+                   
                    ObservableList<String> tableData = zipFiles.getItems();
                    String projPath = PATH_WORK + app.getGUI().getWindow().getTitle().substring(13) + "\\projects\\";
                     for(String s : tableData){
@@ -235,13 +273,23 @@ public class Step4Workspace {
                         for (int i = 0; i < projFolderList.size(); i++) {
                             File ok = projFolderList.get(i);
                             list.add(ok);
-                            System.out.println(list.get(i));
+                            //System.out.println(list.get(i));
                             //fileNames.addAll(Arrays.asList(files));
-
-//                            Iterator it = FileUtils.iterateFiles(ok, names, true);
-//                            while (it.hasNext()) {
-//                                //System.out.println(((File) it.next()).getName());
-//                            }
+                           if(list.get(i).isDirectory()){
+                              //System.out.println(list.get(i).getPath());
+                               Collection files = FileUtils.listFiles(ok, fileFilter, TrueFileFilter.TRUE);
+                               System.out.println(files.toString());
+                               
+//                           Iterator it = FileUtils.iterateFiles(list.get(i), names, true);
+//                           while (!(it.hasNext())) {
+//                               File f = (File) it.next();
+//                               for(File w : f.listFiles()){
+//                                   if(w.getName().endsWith(".java")){
+//                                       System.out.println(w.getName());
+//                                   }
+//                               }
+//                           }
+                        }
                         }
                         //System.out.print(fileNames.get(0).getName() + fileNames.get(1).getName() + fileNames.get(2).getName() );
 //                       if(proj.isDirectory()){
@@ -249,13 +297,19 @@ public class Step4Workspace {
 //                      
 //                       list.addAll(Arrays.asList(files));
 //                       System.out.print(list.get(2).getName());
-                       
-                       
+                         
                    
                    
-                   
+                   }
+                   catch(Exception e){
+                       if(!(isCancelled())){
+                           e.printStackTrace();
+                       }
+                   }
                    return null;
                }
+               
+               
            };
            Thread thread = new Thread(task);
            thread.start();

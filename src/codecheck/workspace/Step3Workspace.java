@@ -30,16 +30,19 @@ import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TextArea;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import net.lingala.zip4j.core.ZipFile;
@@ -55,7 +58,7 @@ public class Step3Workspace {
    //Step1Controller controller;
    CodeCheckData data;
    Step3Controller controller;
-   
+   Step4Controller controller4;
    Label Step3Label;
    Label Step3Desc;
    Label ProgLabel;
@@ -81,7 +84,7 @@ public class Step3Workspace {
    public Step3Workspace(CodeCheckApp initApp){
        app = initApp;
        controller = new Step3Controller(app);
-       
+       controller4 = new Step4Controller(app);
        initLayout();
        
        initControllers();
@@ -157,6 +160,37 @@ public class Step3Workspace {
                 Logger.getLogger(Step1Workspace.class.getName()).log(Level.SEVERE, null, ex);
             }
         });
+        SZips.setCellFactory(lv -> {
+            ListCell<String> cell = new ListCell<>();
+            cell.textProperty().bind(cell.itemProperty());
+            cell.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
+                SZips.requestFocus();
+                if (! cell.isEmpty()) {
+                    int index = cell.getIndex();
+                    if (SZips.getSelectionModel().getSelectedIndices().contains(index)) {
+                        SZips.getSelectionModel().clearSelection(index);
+                        SZips.getFocusModel().focus(-1);
+                        View.setDisable(false);
+                        Remove.setDisable(false);
+                        if(SZips.getSelectionModel().getSelectedItems().size() > 1){
+                        View.setDisable(true);
+                        Remove.setDisable(true);
+                        }
+                        
+                    }
+                    else {
+                        SZips.getSelectionModel().select(index);
+                        if(SZips.getSelectionModel().getSelectedItems().size() > 1){
+                        View.setDisable(true);
+                        Remove.setDisable(true);
+                        }
+                        
+                    }
+                    event.consume();
+                }
+            });
+            return cell ;
+        });
         Unzip.setOnAction(e ->{
 //           try {
 //               controller.handleUnzip();
@@ -187,6 +221,18 @@ public class Step3Workspace {
                         Thread.sleep(5);
                         
                     }
+                    Platform.runLater(new Runnable(){
+                        @Override
+                        public void run() {
+                           SZips.getSelectionModel().clearSelection();
+                            try {
+                                controller4.handleRefresh();
+                            } catch (IOException ex) {
+                                Logger.getLogger(Step3Workspace.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                        }
+                        
+                    });
                     return null;
                     
                 }
