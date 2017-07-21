@@ -253,27 +253,135 @@ public class Step4Workspace {
        ExtractCode.setOnAction(e ->{
            //ObservableList<String>
            ArrayList<File> projFolderList = new ArrayList<>();
+           
            ArrayList<File> list = new ArrayList<>();
            IOFileFilter fileFilterJ = new WildcardFileFilter("*.java");
            IOFileFilter fileFilterC = new WildcardFileFilter("*.c");
+           IOFileFilter fileFilterH = new WildcardFileFilter("*.h");
+           IOFileFilter fileFilterCPP = new WildcardFileFilter("*.cpp");
+           IOFileFilter fileFilterCS = new WildcardFileFilter("*.cs");
+           IOFileFilter fileFilterJS = new WildcardFileFilter("*.js");
+           IOFileFilter fileFilterX = new WildcardFileFilter("*.xml");
            ArrayList<File> files = new ArrayList<File>();
-           ArrayList<File> fileNames = new ArrayList<>();
-           String[] names = new String[1];
-           names[0] = "*.java";
+           ArrayList<String> extensionNames = new ArrayList<>();
+           String[] names = new String[3];
+           names[0] = ".java";
+           names[1] = ".js";
+           names[2] = ".xml";
            ArrayList<File> individualFiles = new ArrayList<>();
+           
+           
+           
+           ArrayList<File> studentFolderList = new ArrayList<>();
+           ArrayList<String> yes = new ArrayList<>();
+           Task<Void> task1 = new Task<Void>(){
+               @Override
+               protected Void call() throws Exception {
+                   try{
+                   if (isJSCheck() == true) {
+                           if (extensionNames.contains("*js")) {
+
+                           } else {
+                               extensionNames.add("*js");
+                           }
+                       }
+                       if (isCCheck() == true) {
+                           if (extensionNames.contains("*c") || extensionNames.contains("*h") || extensionNames.contains("*cpp")) {
+
+                           } else {
+                               extensionNames.add("*c");
+                               extensionNames.add("*h");
+                               extensionNames.add("*cpp");
+
+                           }
+                      }
+                   if (isJCheck() == true) {
+                       if (extensionNames.contains("*java")) {
+
+                       } else {
+                           extensionNames.add("*java");
+                       }
+                   }
+                   if (isCSCheck() == true) {
+                       if (extensionNames.contains("*cs")) {
+
+                       } else {
+                           extensionNames.add("*cs");
+                       }
+                   }
+                   String[] extensions = new String[extensionNames.size()];
+                   extensions = extensionNames.toArray(extensions);
+                   ObservableList<String> tableData = zipFiles.getItems();
+                   String projPath = PATH_WORK + app.getGUI().getWindow().getTitle().substring(13) + "\\projects\\";
+                   
+                   for( String s : tableData){
+                       File student = new File(projPath + s);
+                       studentFolderList.addAll(Arrays.asList(student.listFiles()));
+                       
+                       for(File f : studentFolderList){
+                           if(f.isDirectory()){
+                               for(int i = 0; i< f.listFiles().length; i++ ){
+                                  if(f.listFiles()[i].getPath().endsWith(".java")){
+                                      yes.add(f.getPath());
+                                  }
+                                  //i++;
+                               }
+                           }
+                       }
+                       
+                       
+                   }
+                   
+                   System.out.println(yes.toString());
+               }
+                   catch (Exception e) {
+                       if (!(isCancelled())) {
+                           e.printStackTrace();
+                       }
+                   }
+                   return null;
+               }
+
+           };
+           
+           
            Task<Void> task = new Task<Void>() {
                @Override
                protected Void call() throws Exception {
-                   return null;
-               }
-               
-               
-           };
-           Task<ArrayList<File>> task1 = new Task<ArrayList<File>>(){
-               @Override
-               protected ArrayList<File> call() throws Exception {
-                   try{
-                   
+                   try {
+                       if (isJSCheck() == true) {
+                           if (extensionNames.contains("*js")) {
+
+                           } else {
+                               extensionNames.add("*js");
+                           }
+                       }
+                       if (isCCheck() == true) {
+                           if (extensionNames.contains("*c") || extensionNames.contains("*h") || extensionNames.contains("*cpp")) {
+
+                           } else {
+                               extensionNames.add("*c");
+                               extensionNames.add("*h");
+                               extensionNames.add("*cpp");
+
+                           }
+                       }
+                       if (isJCheck() == true) {
+                           if (extensionNames.contains("*java")) {
+
+                           } else {
+                               extensionNames.add("*java");
+                           }
+                       }
+                       if (isCSCheck() == true) {
+                           if (extensionNames.contains("*cs")) {
+
+                           } else {
+                               extensionNames.add("*cs");
+                           }
+                       }
+                   String[] extensions = new String[extensionNames.size()];
+                   extensions = extensionNames.toArray(extensions);
                    ObservableList<String> tableData = zipFiles.getItems();
                    String projPath = PATH_WORK + app.getGUI().getWindow().getTitle().substring(13) + "\\projects\\";
                     for(String s : tableData){
@@ -284,7 +392,9 @@ public class Step4Workspace {
                        for (int i = 0; i < projFolderList.size(); i++) {
                            File ok = projFolderList.get(i);
                            list.add(ok);
-                           if (list.get(i).isDirectory()) {
+                           if (ok.isDirectory()) {
+                               //Collection files = FileUtils.listFiles(ok, names, true);
+                               if(JCheck.isSelected()) {
                                Collection files = FileUtils.listFiles(ok, fileFilterJ, TrueFileFilter.TRUE);
                                for (Iterator<File> iterator = files.iterator(); iterator.hasNext();) {
                                    File f = iterator.next();
@@ -309,27 +419,110 @@ public class Step4Workspace {
                                            
                                        }
                                    }
-                                   
-                                   
-                                   
                                }
-                               File work = new File(PATH_WORK + app.getGUI().getWindow().getTitle().substring(13) + "\\code\\");
                            }
+                               
+                               if(JSCheck.isSelected()){
+                               Collection files1 = FileUtils.listFiles(ok, fileFilterJS, TrueFileFilter.TRUE);
+                               for (Iterator<File> iterator = files1.iterator(); iterator.hasNext();) {
+                                   File f = iterator.next();
+                                   
+                                   String name = f.getPath();
+                                   String yeah = name.substring(18);
+                                   //System.out.println(yeah);
+                                   String[] x = yeah.split("_");
+                                   String yes = yeah.substring(0, yeah.indexOf("\\"));
+                                   File personDir = new File(PATH_WORK + app.getGUI().getWindow().getTitle().substring(13) + "\\code\\" + yes);
+                                   
+                                   if(!personDir.exists()){
+                                       personDir.mkdir();
+                                       if(f.getPath().contains("\\" + yes + "\\")){
+                                           FileUtils.copyFileToDirectory(f, personDir);
+                                           
+                                       }
+                                   }
+                                   else if(personDir.exists()){
+                                       if(f.getPath().contains("\\" + yes + "\\")){
+                                           FileUtils.copyFileToDirectory(f, personDir);
+                                           
+                                       }
+                                   }
+                               }
+                           }
+                               if(CCheck.isSelected()){
+                                   Collection files2 = FileUtils.listFiles(ok, fileFilterC, TrueFileFilter.TRUE);
+                                   System.out.print(files2.toString());
+                               for (Iterator<File> iterator = files2.iterator(); iterator.hasNext();) {
+                                   File f = iterator.next();
+                                   
+                                   String name = f.getPath();
+                                   String yeah = name.substring(18);
+                                   //System.out.println(yeah);
+                                   String[] x = yeah.split("_");
+                                   String yes = yeah.substring(0, yeah.indexOf("\\"));
+                                   File personDir = new File(PATH_WORK + app.getGUI().getWindow().getTitle().substring(13) + "\\code\\" + yes);
+                                   
+                                       if (!personDir.exists()) {
+                                           personDir.mkdir();
+                                           if (f.getPath().contains("\\" + yes + "\\")) {
+                                               FileUtils.copyFileToDirectory(f, personDir);
+
+                                           }
+                                       } else if (personDir.exists()) {
+                                           if (f.getPath().contains("\\" + yes + "\\")) {
+                                               FileUtils.copyFileToDirectory(f, personDir);
+
+                                           }
+                                       }
+                                   }
+                               }
+                               if (CSCheck.isSelected()) {
+                                   Collection files2 = FileUtils.listFiles(ok, fileFilterCS, TrueFileFilter.TRUE);
+                                   System.out.print(files2.toString());
+                                   for (Iterator<File> iterator = files2.iterator(); iterator.hasNext();) {
+                                       File f = iterator.next();
+
+                                       String name = f.getPath();
+                                       String yeah = name.substring(18);
+                                       //System.out.println(yeah);
+                                       String[] x = yeah.split("_");
+                                       String yes = yeah.substring(0, yeah.indexOf("\\"));
+                                       File personDir = new File(PATH_WORK + app.getGUI().getWindow().getTitle().substring(13) + "\\code\\" + yes);
+
+                                       if (!personDir.exists()) {
+                                           personDir.mkdir();
+                                           if (f.getPath().contains("\\" + yes + "\\")) {
+                                               FileUtils.copyFileToDirectory(f, personDir);
+
+                                           }
+                                       } else if (personDir.exists()) {
+                                           if (f.getPath().contains("\\" + yes + "\\")) {
+                                               FileUtils.copyFileToDirectory(f, personDir);
+
+                                           }
+                                       }
+                                   }
+                               }
+
+                           }
+                           updateProgress(i + 1, projFolderList.size());
+                           Thread.sleep(5);
 
                        }
-                       final Collection files1;
+                       //final Collection files1;
                        ///System.out.println(fileNames.toString());
-                   } catch (Exception e) {
+                   } catch (IOException e) {
                        if (!(isCancelled())) {
                            e.printStackTrace();
                        }
                    }
 
+                   
                    return null;
                }
-               
+
            };
-           Thread thread = new Thread(task1);
+           Thread thread = new Thread(task);
            thread.start();
        });
     }
@@ -363,5 +556,19 @@ public class Step4Workspace {
     public ListView getzipfiles(){
         return zipFiles;
     }
+    public boolean isJCheck(){
+        return JCheck.isSelected();
+    }
+    public boolean isCCheck(){
+        return CCheck.isSelected();
+        
+    }
+    public boolean isCSCheck(){
+        return CSCheck.isSelected();
+    }
+    public boolean isJSCheck(){
+        return JSCheck.isSelected();
+    }
+    
 }
 

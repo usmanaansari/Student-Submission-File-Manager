@@ -28,6 +28,7 @@ import static codecheck.style.CodeCheckStyle.CLASS_PROMPT_LABEL;
 import static djf.ui.AppGUI.CLASS_FILE_BUTTON;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
+import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.ProgressBar;
@@ -35,6 +36,10 @@ import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.TextFlow;
+import javafx.scene.web.WebEngine;
+import javafx.scene.web.WebView;
+import net.lingala.zip4j.exception.ZipException;
 import properties_manager.PropertiesManager;
 
 /**
@@ -45,7 +50,7 @@ public class Step5Workspace {
     CodeCheckApp app;
    //Step1Controller controller;
    CodeCheckData data;
-   
+   Step5Controller controller;
    
    Label Step5Label;
    Label Step5Desc;
@@ -67,12 +72,13 @@ public class Step5Workspace {
    ProgressIndicator progInd;
    HBox rightBBox;
    Label tableLabel;
-   
-   
+   WebView web;
+   WebEngine brow;
+   Hyperlink googleLink;
    
    public Step5Workspace(CodeCheckApp initApp){
        app = initApp;
-       
+       controller = new Step5Controller(app);
        
        initLayout();
        
@@ -107,6 +113,7 @@ public class Step5Workspace {
     rightBBox = new HBox();
     checkProg.setMinSize(450, 15);
     checkProg.setPadding(new Insets(25, 0, 0, 0));
+    googleLink = new Hyperlink("https://google.com");
     
     
     View.prefWidthProperty().bind(buttons.widthProperty().multiply(.2));
@@ -124,8 +131,10 @@ public class Step5Workspace {
     MainBox.getChildren().addAll(LeftBox, RightBox);
     MainBox.setSpacing(50);
     }
-    private void initControllers(){
-       // controller = new Step1Controller(app);
+    private void initControllers() {
+       ViewResults.setOnAction(e ->{
+           OutputWindow.appendText("Student Plagiarim Check results can be found at: \n" + googleLink.getText());
+       });
     }
     private void initStyle(){
         Refresh.getStyleClass().add(CLASS_BUTTONBOX_BUTTONS);
@@ -140,9 +149,13 @@ public class Step5Workspace {
         buttons.getStyleClass().add(CLASS_BUTTONBOX);
         tableLabel.getStyleClass().add(CLASS_PROMPT_LABEL);
         ProgPercentLabel.getStyleClass().add(CLASS_PROMPT_LABEL);
+        
     }
     public HBox getStep5(){
         return MainBox;
+    }
+    public ListView getSWork(){
+        return SWork;
     }
 }
 
