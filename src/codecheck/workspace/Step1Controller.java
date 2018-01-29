@@ -11,10 +11,12 @@ import static djf.settings.AppStartupConstants.PATH_WORK;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ListView;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.ProgressIndicator;
@@ -81,6 +83,7 @@ public class Step1Controller {
     }
     
     public void handleRemove() throws IOException {
+        PropertiesManager props = PropertiesManager.getPropertiesManager();
         CodeCheckWorkspace work = (CodeCheckWorkspace) app.getWorkspaceComponent();
         Step1Workspace work1 = work.work1;
         ListView BBSubs = work1.BBSubs;
@@ -90,9 +93,17 @@ public class Step1Controller {
         String path = PATH_WORK + app.getGUI().getWindow().getTitle().substring(13) + "\\blackboard\\";
 
         File f = new File(path + selectedItem);
-     
-        f.delete();
-        handleRefresh();
+        
+        Alert alert = new Alert(AlertType.CONFIRMATION);
+        alert.setTitle(props.getProperty(STEP1_VIEWT));
+        alert.setHeaderText("Are you sure you want to delete this item? " );
+        alert.setContentText(selectedItem);
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.get() == ButtonType.OK){
+            f.delete();
+            handleRefresh();
+        }
+        
         
     }
     public void handleView() throws ZipException{

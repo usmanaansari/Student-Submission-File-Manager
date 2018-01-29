@@ -26,14 +26,22 @@ import static codecheck.style.CodeCheckStyle.CLASS_BUTTONBOX;
 import static codecheck.style.CodeCheckStyle.CLASS_BUTTONBOX_BUTTONS;
 import static codecheck.style.CodeCheckStyle.CLASS_PROMPT_LABEL;
 import static djf.ui.AppGUI.CLASS_FILE_BUTTON;
+import java.io.IOException;
+import java.util.concurrent.locks.ReentrantLock;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TextArea;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.TextFlow;
@@ -75,7 +83,8 @@ public class Step5Workspace {
    WebView web;
    WebEngine brow;
    Hyperlink googleLink;
-   
+   int numTasks = 0;
+   ReentrantLock progressLock;
    public Step5Workspace(CodeCheckApp initApp){
        app = initApp;
        controller = new Step5Controller(app);
@@ -107,15 +116,18 @@ public class Step5Workspace {
     MainBox = new HBox();
     LeftBox = new VBox();
     RightBox = new VBox();
-    checkProg = new ProgressBar();
-    progInd = new ProgressIndicator(.47);
-    checkProg.setProgress(progInd.getProgress());
+    checkProg = new ProgressBar(0);
+    progInd = new ProgressIndicator();
+    //checkProg.setProgress(progInd.getProgress());
     rightBBox = new HBox();
     checkProg.setMinSize(450, 15);
     checkProg.setPadding(new Insets(25, 0, 0, 0));
-    googleLink = new Hyperlink("https://google.com");
-    
-    
+    googleLink = new Hyperlink("https://bing.com");
+    CodeCheckB.setDisable(true);
+    ViewResults.setDisable(true);
+    Remove.setDisable(true);
+    View.setDisable(true);
+    OutputWindow.setEditable(false);
     View.prefWidthProperty().bind(buttons.widthProperty().multiply(.2));
     Remove.prefWidthProperty().bind(buttons.widthProperty().multiply(.2));
     Refresh.prefWidthProperty().bind(buttons.widthProperty().multiply(.2));
@@ -125,15 +137,111 @@ public class Step5Workspace {
     RightBox.setSpacing(45);
     rightBBox.getChildren().addAll(CodeCheckB, ViewResults);
     buttons.getChildren().addAll(Remove, Refresh, View);
-    progBox.getChildren().addAll(ProgLabel, checkProg,ProgPercentLabel);
+    progBox.getChildren().addAll(ProgLabel, checkProg);
     LeftBox.getChildren().addAll(Step5Label, Step5Desc,tableLabel, SWork, buttons);
     RightBox.getChildren().addAll(progBox, rightBBox, OutputWindow);
     MainBox.getChildren().addAll(LeftBox, RightBox);
     MainBox.setSpacing(50);
+     progressLock = new ReentrantLock();
     }
     private void initControllers() {
-       ViewResults.setOnAction(e ->{
-           OutputWindow.appendText("Student Plagiarim Check results can be found at: \n" + googleLink.getText());
+       CodeCheckB.setOnAction(e ->{
+           
+           
+           Task<Void> task = new Task<Void>() {
+               int task = numTasks++;
+                    double max = 1;
+                    double perc;
+               @Override
+               protected Void call() throws Exception {
+                   try {
+                            progressLock.lock();
+                        for (int i = 0; i < 2; i++) {
+                            System.out.println(i);
+                            perc = i/max;
+                   Platform.runLater(new Runnable() {
+                       @Override
+                       public void run() {
+                           OutputWindow.setText("Student Plagarism Results can be found at: \n" + googleLink.getText());
+                           progInd.setProgress(perc);
+                           checkProg.setProgress(perc);
+                       }
+                   });
+                   
+                   Thread.sleep(5);
+                }}
+                   finally {
+			    // WHAT DO WE NEED TO DO HERE?
+                            progressLock.unlock();
+                            
+                                }
+                        return null;
+               }
+           };
+           Thread thread = new Thread(task);
+           thread.start();
+           
+       });
+       Remove.setOnAction(e->{
+           try {
+               controller.handleRemove();
+           } catch (IOException ex) {
+               Logger.getLogger(Step5Workspace.class.getName()).log(Level.SEVERE, null, ex);
+           }
+       });
+       View.setOnAction(e->{
+           controller.handleView();
+       });
+       Refresh.setOnAction(e->{
+           try {
+               controller.handleRefresh();
+           } catch (IOException ex) {
+               Logger.getLogger(Step5Workspace.class.getName()).log(Level.SEVERE, null, ex);
+           }
+       });
+       SWork.setCellFactory(lv -> {
+            ListCell<String> cell = new ListCell<>();
+            cell.textProperty().bind(cell.itemProperty());
+            cell.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
+                SWork.requestFocus();
+                if (! cell.isEmpty()) {
+                    int index = cell.getIndex();
+                    if (SWork.getSelectionModel().getSelectedIndices().contains(index)) {
+                        SWork.getSelectionModel().clearSelection(index);
+                        SWork.getFocusModel().focus(-1);
+                        View.setDisable(false);
+                        Remove.setDisable(false);
+                        if(SWork.getSelectionModel().getSelectedItems().size() > 1){
+                        View.setDisable(true);
+                        Remove.setDisable(true);
+                        CodeCheckB.setDisable(false);
+                        ViewResults.setDisable(false);
+                        }
+                        if(SWork.getSelectionModel().getSelectedItems().size() == 0){
+                            CodeCheckB.setDisable(true);
+                            ViewResults.setDisable(true);
+                        }
+                        
+                    }
+                    else {
+                        SWork.getSelectionModel().select(index);
+                        if(SWork.getSelectionModel().getSelectedItems().size() > 1){
+                        View.setDisable(true);
+                        Remove.setDisable(true);
+                        }
+                        
+                    }
+                    event.consume();
+                }
+            });
+            return cell ;
+        });
+       SWork.getSelectionModel().selectedItemProperty().addListener(e->
+        {
+                controller.handleSelect();
+        });
+       ViewResults.setOnAction(e->{
+           controller.handleBrowser();
        });
     }
     private void initStyle(){
@@ -157,5 +265,6 @@ public class Step5Workspace {
     public ListView getSWork(){
         return SWork;
     }
+    
 }
 

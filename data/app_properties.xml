@@ -49,7 +49,7 @@
         <property name="STEP3_DESC_LABEL"   value="Select student submissions and click Unzip"></property>
         <property name="PROG3_LABEL"        value="Unzip Progress:"></property>
         <property name="STEP4_LABEL"        value="Step 4: Extract Source Code"></property>
-        <property name="STEP4_DESC_LABEL"   value="Select students and click Extract Code"></property>
+        <property name="STEP4_DESC_LABEL"   value="Click Extract Code to extract selected file types"></property>
         <property name="PROG4_LABEL"        value="Code Progress:"></property>
         <property name="JCHECK_LABEL"       value=".java"></property>
         <property name="CCHECK_LABEL"       value=".c, .h, .cpp"></property>
@@ -72,11 +72,11 @@
         <property name="STEP4_TABLE"        value="Student Work Directories"></property>
         <property name="STEP5_TABLE"        value="Student Work"></property>
     
-                                                   
+        <property name="STEP1_VIEWT"        value="Zip File Contents"></property>                                          
         <property name="PROGP_LABEL"        value="47%"></property>                                         
         <!-- TOOLTIPS FOR BUTTONS -->
-        <property name="NEW_TOOLTIP"		value="Create a New Slideshow"></property>
-        <property name="LOAD_TOOLTIP"		value="Load an existing Slideshow"></property>
+        <property name="NEW_TOOLTIP"		value="Create a New CodeCheck"></property>
+        <property name="LOAD_TOOLTIP"		value="Load an existing CodeCheck"></property>
         <property name="ABOUT_TOOLTIP"		value="View Application Info"></property>
         <property name="RENAME_TOOLTIP"		value="Rename the Application"></property>
         

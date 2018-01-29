@@ -155,9 +155,10 @@ public class Step1Workspace {
     View.prefWidthProperty().bind(buttons.widthProperty().multiply(.2));
     Remove.prefWidthProperty().bind(buttons.widthProperty().multiply(.2));
     Refresh.prefWidthProperty().bind(buttons.widthProperty().multiply(.2));
-    
-    
-    
+    Remove.setDisable(true);
+    View.setDisable(true);
+    Extract.setDisable(true);
+    OutputWindow.setEditable(false);
     OutputWindow.setMinSize(900, 600);
     LeftBox.setPadding(new Insets(0, 0, 0, 10));
     RightBox.setSpacing(45);
@@ -181,6 +182,8 @@ public class Step1Workspace {
         {
                 controller.handleSelect();
                 Extract.setDisable(false);
+                View.setDisable(false);
+                Remove.setDisable(false);
         });
 //        BBSubs.setCellFactory(new Callback<ListView<String>, ListCell<String>>() {  
 //            @Override
@@ -211,9 +214,16 @@ public class Step1Workspace {
                         BBSubs.getFocusModel().focus(-1);
                         View.setDisable(false);
                         Remove.setDisable(false);
+                        Extract.setDisable(false);
                         if(BBSubs.getSelectionModel().getSelectedItems().size() > 1){
                         View.setDisable(true);
                         Remove.setDisable(true);
+                        //Extract.setDisable(true);
+                        }
+                        if(BBSubs.getSelectionModel().getSelectedItems().size() ==0){
+                            View.setDisable(true);
+                            Remove.setDisable(true);
+                            Extract.setDisable(true);
                         }
                         
                     }
@@ -261,7 +271,8 @@ public class Step1Workspace {
                     for (int i = 0; i < selectedItem.size(); i++) {
                         try {
                             ZipFile newZip = new ZipFile(PATH_WORK + title + "\\blackboard\\" + selectedItem.get(i));
-                            List fileHeaderList = newZip.getFileHeaders();
+                            if(newZip.isValidZipFile()){
+                            List fileHeaderList = newZip.getFileHeaders(); 
                             zips.add(newZip);
                             
                             //OutputWindow.appendText(zips.get(i).getFile().getName());
@@ -276,9 +287,11 @@ public class Step1Workspace {
                                     success.add(fileHeader.getFileName() + " was successfully extracted! \n");
                                 }
                             }
+                            }
                         } catch (ZipException ex) {
                             Logger.getLogger(Step1Workspace.class.getName()).log(Level.SEVERE, null, ex);
                         }
+                        
                         
                     }
                     

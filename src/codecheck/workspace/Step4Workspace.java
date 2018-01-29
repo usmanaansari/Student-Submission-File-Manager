@@ -44,6 +44,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.geometry.Insets;
@@ -78,7 +79,7 @@ public class Step4Workspace {
    //Step1Controller controller;
    CodeCheckData data;
    Step4Controller controller;
-   
+   Step5Controller controller5;
    Label Step4Label;
    Label Step4Desc;
    Label ProgLabel;
@@ -120,7 +121,7 @@ public class Step4Workspace {
    public Step4Workspace(CodeCheckApp initApp){
        app = initApp;
        controller = new Step4Controller(app);
-       
+       controller5 = new Step5Controller(app);
        initLayout();
        
        initControllers();
@@ -146,10 +147,10 @@ public class Step4Workspace {
     MainBox = new HBox();
     LeftBox = new VBox();
     RightBox = new VBox();
-    extCodeProg = new ProgressBar(.47);
+    extCodeProg = new ProgressBar(0);
     progInd = new ProgressIndicator();
     FileTypes = new GridPane();
-    progInd.setProgress(50);
+    ///progInd.setProgress();
     JCheck = new CheckBox();
     CCheck = new CheckBox();
     JSCheck = new CheckBox();
@@ -176,7 +177,9 @@ public class Step4Workspace {
     LeftBox.setPadding(new Insets(0, 0, 0, 10));
     RightBox.setSpacing(45);
     JSCheck.setAlignment(Pos.CENTER_LEFT);
-    
+    ExtractCode.setDisable(true);
+    Remove.setDisable(true);
+    View.setDisable(true);
     CSCheck.setAlignment(Pos.CENTER_LEFT);
     TypesBox1.getChildren().addAll(JCheck, JCheckL, JSCheck, JSCheckL);
     TypesBox2.getChildren().addAll(CCheck, CCheckL, CSCheck, CSCheckL);
@@ -185,9 +188,9 @@ public class Step4Workspace {
     TypesBox1.setSpacing(10);
     TypesBox2.setSpacing(10);
     TypesBox3.setSpacing(10);
-    
+    OutputWindow.setEditable(false);
     buttons.getChildren().addAll(Remove, Refresh, View);
-    progBox.getChildren().addAll(ProgLabel, extCodeProg,ProgPercentLabel);
+    progBox.getChildren().addAll(ProgLabel, extCodeProg);
     LeftBox.getChildren().addAll(Step4Label, Step4Desc, tableLabel, zipFiles, buttons, FileTL, TypesBox);
     RightBox.getChildren().addAll(progBox, ExtractCode, OutputWindow);
     MainBox.getChildren().addAll(LeftBox, RightBox);
@@ -231,9 +234,17 @@ public class Step4Workspace {
                         zipFiles.getFocusModel().focus(-1);
                         View.setDisable(false);
                         Remove.setDisable(false);
+                        ExtractCode.setDisable(false);
                         if(zipFiles.getSelectionModel().getSelectedItems().size() > 1){
                         View.setDisable(true);
                         Remove.setDisable(true);
+                        //ExtractCode.setDisable(false);
+                        }
+                        if(zipFiles.getSelectionModel().getSelectedItems().size() == 0){
+                            ExtractCode.setDisable(true);
+                        }
+                        if(zipFiles.getSelectionModel().getSelectedItems().size() == 1){
+                            ExtractCode.setDisable(false);
                         }
                         
                     }
@@ -242,6 +253,7 @@ public class Step4Workspace {
                         if(zipFiles.getSelectionModel().getSelectedItems().size() > 1){
                         View.setDisable(true);
                         Remove.setDisable(true);
+                         ExtractCode.setDisable(false);
                         }
                         
                     }
@@ -274,77 +286,78 @@ public class Step4Workspace {
            
            ArrayList<File> studentFolderList = new ArrayList<>();
            ArrayList<String> yes = new ArrayList<>();
-           Task<Void> task1 = new Task<Void>(){
-               @Override
-               protected Void call() throws Exception {
-                   try{
-                   if (isJSCheck() == true) {
-                           if (extensionNames.contains("*js")) {
-
-                           } else {
-                               extensionNames.add("*js");
-                           }
-                       }
-                       if (isCCheck() == true) {
-                           if (extensionNames.contains("*c") || extensionNames.contains("*h") || extensionNames.contains("*cpp")) {
-
-                           } else {
-                               extensionNames.add("*c");
-                               extensionNames.add("*h");
-                               extensionNames.add("*cpp");
-
-                           }
-                      }
-                   if (isJCheck() == true) {
-                       if (extensionNames.contains("*java")) {
-
-                       } else {
-                           extensionNames.add("*java");
-                       }
-                   }
-                   if (isCSCheck() == true) {
-                       if (extensionNames.contains("*cs")) {
-
-                       } else {
-                           extensionNames.add("*cs");
-                       }
-                   }
-                   String[] extensions = new String[extensionNames.size()];
-                   extensions = extensionNames.toArray(extensions);
-                   ObservableList<String> tableData = zipFiles.getItems();
-                   String projPath = PATH_WORK + app.getGUI().getWindow().getTitle().substring(13) + "\\projects\\";
-                   
-                   for( String s : tableData){
-                       File student = new File(projPath + s);
-                       studentFolderList.addAll(Arrays.asList(student.listFiles()));
-                       
-                       for(File f : studentFolderList){
-                           if(f.isDirectory()){
-                               for(int i = 0; i< f.listFiles().length; i++ ){
-                                  if(f.listFiles()[i].getPath().endsWith(".java")){
-                                      yes.add(f.getPath());
-                                  }
-                                  //i++;
-                               }
-                           }
-                       }
-                       
-                       
-                   }
-                   
-                   System.out.println(yes.toString());
-               }
-                   catch (Exception e) {
-                       if (!(isCancelled())) {
-                           e.printStackTrace();
-                       }
-                   }
-                   return null;
-               }
-
-           };
+//           Task<Void> task1 = new Task<Void>(){
+//               @Override
+//               protected Void call() throws Exception {
+//                   try{
+//                   if (isJSCheck() == true) {
+//                           if (extensionNames.contains("*js")) {
+//
+//                           } else {
+//                               extensionNames.add("*js");
+//                           }
+//                       }
+//                       if (isCCheck() == true) {
+//                           if (extensionNames.contains("*c") || extensionNames.contains("*h") || extensionNames.contains("*cpp")) {
+//
+//                           } else {
+//                               extensionNames.add("*c");
+//                               extensionNames.add("*h");
+//                               extensionNames.add("*cpp");
+//
+//                           }
+//                      }
+//                   if (isJCheck() == true) {
+//                       if (extensionNames.contains("*java")) {
+//
+//                       } else {
+//                           extensionNames.add("*java");
+//                       }
+//                   }
+//                   if (isCSCheck() == true) {
+//                       if (extensionNames.contains("*cs")) {
+//
+//                       } else {
+//                           extensionNames.add("*cs");
+//                       }
+//                   }
+//                   String[] extensions = new String[extensionNames.size()];
+//                   extensions = extensionNames.toArray(extensions);
+//                   ObservableList<String> tableData = zipFiles.getItems();
+//                   String projPath = PATH_WORK + app.getGUI().getWindow().getTitle().substring(13) + "\\projects\\";
+//                   
+//                   for( String s : tableData){
+//                       File student = new File(projPath + s);
+//                       studentFolderList.addAll(Arrays.asList(student.listFiles()));
+//                       
+//                       for(File f : studentFolderList){
+//                           if(f.isDirectory()){
+//                               for(int i = 0; i< f.listFiles().length; i++ ){
+//                                  if(f.listFiles()[i].getPath().endsWith(".java")){
+//                                      yes.add(f.getPath());
+//                                  }
+//                                  //i++;
+//                               }
+//                           }
+//                       }
+//                       
+//                       
+//                   }
+//                   
+//                   System.out.println(yes.toString());
+//               }
+//                   catch (Exception e) {
+//                       if (!(isCancelled())) {
+//                           e.printStackTrace();
+//                       }
+//                   }
+//                   return null;
+//               }
+//
+//           };
            
-           
+           ArrayList<String> success = new ArrayList<>();
+           ArrayList<String> fail = new ArrayList<>();
            Task<Void> task = new Task<Void>() {
                @Override
                protected Void call() throws Exception {
@@ -410,12 +423,14 @@ public class Step4Workspace {
                                        personDir.mkdir();
                                        if(f.getPath().contains("\\" + yes + "\\")){
                                            FileUtils.copyFileToDirectory(f, personDir);
+                                           success.add(f.getName() + " was successfully extracted out!");
                                            
                                        }
                                    }
                                    else if(personDir.exists()){
                                        if(f.getPath().contains("\\" + yes + "\\")){
                                            FileUtils.copyFileToDirectory(f, personDir);
+                                           success.add(f.getName() + " was successfully extracted out!");
                                            
                                        }
                                    }
@@ -438,12 +453,14 @@ public class Step4Workspace {
                                        personDir.mkdir();
                                        if(f.getPath().contains("\\" + yes + "\\")){
                                            FileUtils.copyFileToDirectory(f, personDir);
+                                           success.add(f.getName() + " was successfully extracted out!");
                                            
                                        }
                                    }
                                    else if(personDir.exists()){
                                        if(f.getPath().contains("\\" + yes + "\\")){
                                            FileUtils.copyFileToDirectory(f, personDir);
+                                           success.add(f.getName() + " was successfully extracted out!");
                                            
                                        }
                                    }
@@ -466,11 +483,13 @@ public class Step4Workspace {
                                            personDir.mkdir();
                                            if (f.getPath().contains("\\" + yes + "\\")) {
                                                FileUtils.copyFileToDirectory(f, personDir);
+                                               success.add(f.getName() + " was successfully extracted out!");
 
                                            }
                                        } else if (personDir.exists()) {
                                            if (f.getPath().contains("\\" + yes + "\\")) {
                                                FileUtils.copyFileToDirectory(f, personDir);
+                                               success.add(f.getName() + " was successfully extracted out!");
 
                                            }
                                        }
@@ -493,11 +512,13 @@ public class Step4Workspace {
                                            personDir.mkdir();
                                            if (f.getPath().contains("\\" + yes + "\\")) {
                                                FileUtils.copyFileToDirectory(f, personDir);
+                                               success.add(f.getName() + " was successfully extracted out!");
 
                                            }
                                        } else if (personDir.exists()) {
                                            if (f.getPath().contains("\\" + yes + "\\")) {
                                                FileUtils.copyFileToDirectory(f, personDir);
+                                               success.add(f.getName() + " was successfully extracted out!");
 
                                            }
                                        }
@@ -516,13 +537,25 @@ public class Step4Workspace {
                            e.printStackTrace();
                        }
                    }
-
+                   
+                   Platform.runLater(new Runnable(){
+                       @Override
+                       public void run() {
+                           try {
+                               controller5.handleRefresh();
+                           } catch (IOException ex) {
+                               Logger.getLogger(Step4Workspace.class.getName()).log(Level.SEVERE, null, ex);
+                           }
+                       }
+                       
+                   });
                    
                    return null;
                }
 
            };
            Thread thread = new Thread(task);
+           extCodeProg.progressProperty().bind(task.progressProperty());
            thread.start();
        });
     }

@@ -184,21 +184,26 @@ public class WelcomeController {
 		app.getWorkspaceComponent().activateWorkspace(app.getGUI().getAppPane());
 
                 //app.getFileComponent().loadData(app.getDataComponent(), selectedFile.getAbsolutePath());
-                String title = selectedFile.getName();
-                app.getGUI().getWindow().setTitle("Code Check - " + title);
-                File[] files = selectedFile.listFiles();
-                ObservableList<String> bbs = FXCollections.observableArrayList();
-                for(File f :files){
-                    if(f.getName().equals("blackboard")){
-                        File bbFile = new File(selectedFile.getAbsolutePath() + "\\blackboard\\");
-                        for(File b : bbFile.listFiles()){             
-                            bbs.add(b.getName());
-                        }
-                       
-                    }
-                }
+//                String title = selectedFile.getName();
+//                app.getGUI().getWindow().setTitle("Code Check - " + title);
+//                File[] files = selectedFile.listFiles();
+//                ObservableList<String> bbs = FXCollections.observableArrayList();
+//                for(File f :files){
+//                    if(f.getName().equals("blackboard")){
+//                        File bbFile = new File(selectedFile.getAbsolutePath() + "\\blackboard\\");
+//                        for(File b : bbFile.listFiles()){             
+//                            bbs.add(b.getName());
+//                        }
+//                       
+//                    }
+//                }
+                updateStep1Table(selectedFile);
+                updateStep2Table(selectedFile);
+                updateStep3Table(selectedFile);
+                updateStep4Table(selectedFile);
+                updateStep5Table(selectedFile);
                 
-                work1.getBBSubs().setItems(bbs);
+                //work1.getBBSubs().setItems(bbs);
                 appPane.getChildren().remove(headPane);
                 appPane.getChildren().remove(leftBox);
                 appPane.getChildren().remove(rightBox);
@@ -210,6 +215,137 @@ public class WelcomeController {
                 dialog.show(props.getProperty(LOAD_ERROR_TITLE), props.getProperty(LOAD_ERROR_MESSAGE));
             }
         }
+    }
+    public void updateStep1Table(File selectedFile) {
+        CodeCheckWorkspace work = (CodeCheckWorkspace) app.getWorkspaceComponent();
+        Step1Workspace work1 = work.work1;
+        String title = selectedFile.getName();
+        app.getGUI().getWindow().setTitle("Code Check - " + title);
+        File[] files = selectedFile.listFiles();
+        ObservableList<String> bbs = FXCollections.observableArrayList();
+        for (File f : files) {
+            if (f.getName().equals("blackboard")) {
+                File bbFile = new File(selectedFile.getAbsolutePath() + "\\blackboard\\");
+                for (File b : bbFile.listFiles()) {
+                    bbs.add(b.getName());
+                }
+
+            }
+        }
+        work1.getBBSubs().setItems(bbs);
+    }
+
+    public void updateStep2Table(File selectedFile) {
+        CodeCheckWorkspace work = (CodeCheckWorkspace) app.getWorkspaceComponent();
+        Step2Workspace work2 = work.work2;
+        String title = selectedFile.getName();
+        app.getGUI().getWindow().setTitle("Code Check - " + title);
+        File[] files = selectedFile.listFiles();
+        ObservableList<File> Sbs = FXCollections.observableArrayList();
+        ObservableList<String> studs = FXCollections.observableArrayList();
+        for (File f : files) {
+            if (f.getName().equals("submissions")) {
+                File SbFile = new File(selectedFile.getAbsolutePath() + "\\submissions\\");
+                for (File s : SbFile.listFiles()) {
+                    Sbs.add(s);
+                    studs.add(s.getName());
+                }
+
+            }
+        }
+        if(studs.isEmpty()){
+            work2.Rename.setDisable(true);
+        }
+        else{
+            work2.Rename.setDisable(false);
+        }
+        work2.getSSubs().setItems(studs);
+    }
+    public void updateStep3Table(File selectedFile){
+        CodeCheckWorkspace work = (CodeCheckWorkspace) app.getWorkspaceComponent();
+        Step3Workspace work3 = work.work3;
+        String title = selectedFile.getName();
+        app.getGUI().getWindow().setTitle("Code Check - " + title);
+        File[] files = selectedFile.listFiles();
+        ObservableList<File> Sbs = FXCollections.observableArrayList();
+        ObservableList<String> studs = FXCollections.observableArrayList();
+        for (File f : files) {
+            if (f.getName().equals("submissions")) {
+                File SbFile = new File(selectedFile.getAbsolutePath() + "\\submissions\\");
+                for (File s : SbFile.listFiles()) {
+                    Sbs.add(s);
+                    if(s.getAbsolutePath().endsWith(".zip")){
+                    studs.add(s.getName());
+                    }
+                }
+
+            }
+        }
+        if(studs.isEmpty()){
+            work3.Unzip.setDisable(true);
+        }
+        else{
+            work3.Unzip.setDisable(true);
+        }
+        work3.getSZips().setItems(studs);
+    }
+    public void updateStep4Table(File selectedFile){
+        CodeCheckWorkspace work = (CodeCheckWorkspace) app.getWorkspaceComponent();
+        Step4Workspace work4 = work.work4;
+        String title = selectedFile.getName();
+        app.getGUI().getWindow().setTitle("Code Check - " + title);
+        File[] files = selectedFile.listFiles();
+        ObservableList<File> Sbs = FXCollections.observableArrayList();
+        ObservableList<String> studs = FXCollections.observableArrayList();
+        for (File f : files) {
+            if (f.getName().equals("projects")) {
+                File SbFile = new File(selectedFile.getAbsolutePath() + "\\projects\\");
+                for (File s : SbFile.listFiles()) {
+                    Sbs.add(s);
+                    //if(s.getAbsolutePath().contains(".zip")){
+                    studs.add(s.getName());
+                    //}
+                }
+
+            }
+        }
+        if(studs.isEmpty()){
+            work4.ExtractCode.setDisable(true);
+        }
+        else{
+            work4.ExtractCode.setDisable(true);
+        }
+        work4.getzipfiles().setItems(studs);
+    }
+    public void updateStep5Table(File selectedFile){
+        CodeCheckWorkspace work = (CodeCheckWorkspace) app.getWorkspaceComponent();
+        Step5Workspace work5 = work.work5;
+        String title = selectedFile.getName();
+        app.getGUI().getWindow().setTitle("Code Check - " + title);
+        File[] files = selectedFile.listFiles();
+        ObservableList<File> Sbs = FXCollections.observableArrayList();
+        ObservableList<String> studs = FXCollections.observableArrayList();
+        for (File f : files) {
+            if (f.getName().equals("code")) {
+                File SbFile = new File(selectedFile.getAbsolutePath() + "\\code\\");
+                for (File s : SbFile.listFiles()) {
+                    Sbs.add(s);
+                    //if(s.getAbsolutePath().contains(".zip")){
+                    studs.add(s.getName());
+                    //}
+                }
+
+            }
+        }
+        if(studs.isEmpty()){
+            work5.CodeCheckB.setDisable(true);
+            work5.ViewResults.setDisable(true);
+        }
+        else{
+            work5.CodeCheckB.setDisable(true);
+            work5.ViewResults.setDisable(true);
+        }
+        work5.getSWork().setItems(studs);
     }
 }
 

@@ -120,8 +120,9 @@ public class Step2Workspace {
     ProgPercentLabel = new Label(props.getProperty(PROGP_LABEL));
     extProg.setMinSize(450, 15);
     extProg.setPadding(new Insets(25, 0, 0, 0));
-    
-    
+    Remove.setDisable(true);
+    View.setDisable(true);
+    Rename.setDisable(false);
     View.prefWidthProperty().bind(buttons.widthProperty().multiply(.2));
     Remove.prefWidthProperty().bind(buttons.widthProperty().multiply(.2));
     Refresh.prefWidthProperty().bind(buttons.widthProperty().multiply(.2));
@@ -129,9 +130,9 @@ public class Step2Workspace {
     OutputWindow.setMinSize(900, 600);
     LeftBox.setPadding(new Insets(0, 0, 0, 10));
     RightBox.setSpacing(45);
-    
+    OutputWindow.setEditable(false);
     buttons.getChildren().addAll(Remove, Refresh, View);
-    progBox.getChildren().addAll(ProgLabel, extProg, ProgPercentLabel);
+    progBox.getChildren().addAll(ProgLabel, extProg);
     LeftBox.getChildren().addAll(Step2Label, Step2Desc, tableLabel, SSubs, buttons);
     RightBox.getChildren().addAll(progBox, Rename, OutputWindow);
     MainBox.getChildren().addAll(LeftBox, RightBox);
@@ -179,7 +180,10 @@ public class Step2Workspace {
                         View.setDisable(true);
                         Remove.setDisable(true);
                         }
-                        
+                        if(SSubs.getSelectionModel().getSelectedItems().size() == 0){
+                            View.setDisable(true);
+                            Remove.setDisable(true);
+                        }
                     }
                     else {
                         SSubs.getSelectionModel().select(index);

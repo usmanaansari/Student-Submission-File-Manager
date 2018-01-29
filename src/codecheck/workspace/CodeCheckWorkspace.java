@@ -337,6 +337,8 @@ public class CodeCheckWorkspace extends AppWorkspaceComponent {
         work1.BBSubs.getItems().clear();
         work2.SSubs.getItems().clear();
         work3.SZips.getItems().clear();
+        work4.zipFiles.getItems().clear();
+        work5.SWork.getItems().clear();
     }
 
     @Override

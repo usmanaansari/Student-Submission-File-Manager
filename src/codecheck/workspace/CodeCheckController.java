@@ -211,6 +211,7 @@ public class CodeCheckController {
                 data.setTitle(result.get());
                 f.renameTo(file);
 
+                
             }
 
         }
@@ -300,6 +301,7 @@ public class CodeCheckController {
                 updateStep2Table(selectedFile);
                 updateStep3Table(selectedFile);
                 updateStep4Table(selectedFile);
+                updateStep5Table(selectedFile);
             } catch (Exception e) {
                 AppMessageDialogSingleton dialog = AppMessageDialogSingleton.getSingleton();
                 dialog.show(props.getProperty(LOAD_ERROR_TITLE), props.getProperty(LOAD_ERROR_MESSAGE));
@@ -344,6 +346,8 @@ public class CodeCheckController {
 
             }
         }
+            work2.Rename.setDisable(false);
+        
         work2.getSSubs().setItems(studs);
     }
     public void updateStep3Table(File selectedFile){
@@ -365,6 +369,12 @@ public class CodeCheckController {
                 }
 
             }
+        }
+        if(studs.isEmpty()){
+            work3.Unzip.setDisable(true);
+        }
+        else{
+            work3.Unzip.setDisable(true);
         }
         work3.getSZips().setItems(studs);
     }
@@ -388,7 +398,43 @@ public class CodeCheckController {
 
             }
         }
+        if(studs.isEmpty()){
+            work4.ExtractCode.setDisable(true);
+        }
+        else{
+            work4.ExtractCode.setDisable(true);
+        }
         work4.getzipfiles().setItems(studs);
+    }
+    public void updateStep5Table(File selectedFile){
+        CodeCheckWorkspace work = (CodeCheckWorkspace) app.getWorkspaceComponent();
+        Step5Workspace work5 = work.work5;
+        String title = selectedFile.getName();
+        app.getGUI().getWindow().setTitle("Code Check - " + title);
+        File[] files = selectedFile.listFiles();
+        ObservableList<File> Sbs = FXCollections.observableArrayList();
+        ObservableList<String> studs = FXCollections.observableArrayList();
+        for (File f : files) {
+            if (f.getName().equals("code")) {
+                File SbFile = new File(selectedFile.getAbsolutePath() + "\\code\\");
+                for (File s : SbFile.listFiles()) {
+                    Sbs.add(s);
+                    //if(s.getAbsolutePath().contains(".zip")){
+                    studs.add(s.getName());
+                    //}
+                }
+
+            }
+        }
+        if(studs.isEmpty()){
+            work5.CodeCheckB.setDisable(true);
+            work5.ViewResults.setDisable(true);
+        }
+        else{
+            work5.CodeCheckB.setDisable(true);
+            work5.ViewResults.setDisable(true);
+        }
+        work5.getSWork().setItems(studs);
     }
 
 }

@@ -13,9 +13,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ListView;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TextArea;
@@ -74,15 +76,19 @@ public class Step3Controller {
         if (selectedItems.size() > 1) {
             work3.View.setDisable(true);
             work3.Remove.setDisable(true);
+            work3.Unzip.setDisable(false);
 
         } else {
             work3.View.setDisable(false);
             work3.Remove.setDisable(false);
+            work3.Unzip.setDisable(false);
         }
+        
 
     }
 
     public void handleRemove() throws IOException {
+        PropertiesManager props = PropertiesManager.getPropertiesManager();
         CodeCheckWorkspace work = (CodeCheckWorkspace) app.getWorkspaceComponent();
         Step3Workspace work3 = work.work3;
         ListView SZips = work3.SZips;
@@ -95,8 +101,15 @@ public class Step3Controller {
 
         File f = new File(path + selectedItem);
 
-        delete(f);
-        handleRefresh();
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle(props.getProperty(STEP1_VIEWT));
+        alert.setHeaderText("Are you sure you want to delete this item? " );
+        alert.setContentText(selectedItem);
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.get() == ButtonType.OK){
+            f.delete();
+            handleRefresh();
+        }
     }
 
     public void handleView() throws ZipException {
@@ -104,7 +117,7 @@ public class Step3Controller {
         CodeCheckWorkspace work = (CodeCheckWorkspace) app.getWorkspaceComponent();
         Step3Workspace work3 = work.work3;
         ListView SZips = work3.SZips;
-        SZips.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+        SZips.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 
         String selectedItem = (String) SZips.getSelectionModel().getSelectedItem();
         String path = PATH_WORK + app.getGUI().getWindow().getTitle().substring(13) + "\\submissions\\";

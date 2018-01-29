@@ -28,6 +28,7 @@ import static djf.settings.AppStartupConstants.PATH_WORK;
 import static djf.ui.AppGUI.CLASS_FILE_BUTTON;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
@@ -117,8 +118,9 @@ public class Step3Workspace {
     ProgPercentLabel = new Label(props.getProperty(PROGP_LABEL));
     unzipProg.setMinSize(450, 15);
     unzipProg.setPadding(new Insets(25, 0, 0, 0));
-    
-    
+    Remove.setDisable(true);
+    View.setDisable(true);
+    Unzip.setDisable(true);
     View.prefWidthProperty().bind(buttons.widthProperty().multiply(.2));
     Remove.prefWidthProperty().bind(buttons.widthProperty().multiply(.2));
     Refresh.prefWidthProperty().bind(buttons.widthProperty().multiply(.2));
@@ -126,9 +128,9 @@ public class Step3Workspace {
     OutputWindow.setMinSize(900, 600);
     LeftBox.setPadding(new Insets(0, 0, 0, 10));
     RightBox.setSpacing(45);
-    
+    OutputWindow.setEditable(false);
     buttons.getChildren().addAll(Remove, Refresh, View);
-    progBox.getChildren().addAll(ProgLabel, unzipProg,ProgPercentLabel);
+    progBox.getChildren().addAll(ProgLabel, unzipProg);
     LeftBox.getChildren().addAll(Step3Label, Step3Desc,tableLabel, SZips, buttons);
     RightBox.getChildren().addAll(progBox, Unzip, OutputWindow);
     MainBox.getChildren().addAll(LeftBox, RightBox);
@@ -176,7 +178,14 @@ public class Step3Workspace {
                         View.setDisable(true);
                         Remove.setDisable(true);
                         }
-                        
+                        if(SZips.getSelectionModel().getSelectedItems().size() == 0){
+                            View.setDisable(true);
+                            Remove.setDisable(true);
+                            Unzip.setDisable(true);
+                        } 
+                        if(SZips.getSelectionModel().getSelectedItems().size() == 1){
+                            Unzip.setDisable(false);
+                        }
                     }
                     else {
                         SZips.getSelectionModel().select(index);
@@ -203,6 +212,8 @@ public class Step3Workspace {
             String title = app.getGUI().getWindow().getTitle().substring(13);
             File subDirectory = new File(PATH_WORK + title + "\\submissions\\");
             //SZips.getSelectionModel().clearSelection();
+            ArrayList<String> success = new ArrayList<>();
+            ArrayList<String> fail = new ArrayList<>();
             Task<Void> task = new Task<Void>() {
            
                 @Override
@@ -216,6 +227,7 @@ public class Step3Workspace {
                             File directory = new File(PATH_WORK + title + "\\projects\\" + s.split("\\.")[0] + "_work");
                             if(z.isValidZipFile()){
                             z.extractAll(directory.getAbsolutePath());
+                            success.add(z.getFile().getName() + " was successfully extracted");
                             }
                         } catch (ZipException ex) {
                             Logger.getLogger(Step3Workspace.class.getName()).log(Level.SEVERE, null, ex);
@@ -230,6 +242,10 @@ public class Step3Workspace {
                            SZips.getSelectionModel().clearSelection();
                             try {
                                 controller4.handleRefresh();
+                                for(String s : success){
+                                    OutputWindow.appendText(s + "\n");
+                                }
+                                
                             } catch (IOException ex) {
                                 Logger.getLogger(Step3Workspace.class.getName()).log(Level.SEVERE, null, ex);
                             }

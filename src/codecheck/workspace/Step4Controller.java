@@ -11,9 +11,11 @@ import static djf.settings.AppStartupConstants.PATH_WORK;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ListView;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TextArea;
@@ -70,10 +72,15 @@ public class Step4Controller {
         if (selectedItems.size() > 1) {
             work4.View.setDisable(true);
             work4.Remove.setDisable(true);
+            work4.ExtractCode.setDisable(false);
 
         } else {
             work4.View.setDisable(false);
             work4.Remove.setDisable(false);
+            //work4.ExtractCode.setDisable(true);
+        }
+        if(selectedItems.size() == 1){
+             work4.ExtractCode.setDisable(false);
         }
 
     }
@@ -82,7 +89,7 @@ public class Step4Controller {
         CodeCheckWorkspace work = (CodeCheckWorkspace) app.getWorkspaceComponent();
         Step4Workspace work4 = work.work4;
         ListView zipFiles = work4.zipFiles;
-        zipFiles.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+        zipFiles.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 
         String selectedItem = (String) zipFiles.getSelectionModel().getSelectedItem();
         String path = PATH_WORK + app.getGUI().getWindow().getTitle().substring(13) + "\\projects\\";
@@ -91,8 +98,17 @@ public class Step4Controller {
 
         File f = new File(path + selectedItem);
 
-        delete(f);
-        handleRefresh();
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Folder contents");
+        alert.setHeaderText("Are you sure you want to delete this item? " );
+        alert.setContentText(selectedItem);
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.get() == ButtonType.OK){
+            if(f.isDirectory()){
+            delete(f);
+                }
+            handleRefresh();
+        }
     }
 
     public void handleView() throws ZipException {
@@ -199,4 +215,5 @@ public class Step4Controller {
             System.out.println("File is deleted : " + file.getAbsolutePath());
         }
     }
+        
 }
